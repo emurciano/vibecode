@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programació de microcontroladors — Tecnologia i Enginyeria II · 2n Batxillerat</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #f4f3ef;
+  --surface:    #ffffff;
+  --surface2:   #eeece7;
+  --border:     #dedad2;
+  --text:       #18170f;
+  --text-sec:   #65635c;
+  --text-muted: #9c9a93;
+  --accent:     #1d5fc4;
+  --accent-lt:  #e8eefb;
+  --accent-bdr: #afc4f0;
+  --ok:         #1a6e40;
+  --ok-bg:      #e8f5ee;
+  --ok-bdr:     #93ccae;
+  --err:        #b83030;
+  --err-bg:     #fbeaea;
+  --err-bdr:    #e8a8a8;
+  --warn:       #8a5a00;
+  --warn-bg:    #fdf4e0;
+  --warn-bdr:   #e8cc80;
+  --mono:       'JetBrains Mono','Fira Mono','Courier New',monospace;
+  --r:          6px;
+  --r-lg:       10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:         #131210;
+    --surface:    #1c1b18;
+    --surface2:   #232118;
+    --border:     #2c2b26;
+    --text:       #e6e3da;
+    --text-sec:   #96938a;
+    --text-muted: #6a6860;
+    --accent:     #5a8ef0;
+    --accent-lt:  #182040;
+    --accent-bdr: #2c4880;
+    --ok:         #3fc878;
+    --ok-bg:      #0d2418;
+    --ok-bdr:     #1a5230;
+    --err:        #f07070;
+    --err-bg:     #280e0e;
+    --err-bdr:    #602020;
+    --warn:       #e0a830;
+    --warn-bg:    #261a00;
+    --warn-bdr:   #604800;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 2.5rem 1rem 3rem;
+}
+
+.wrap { max-width: 760px; margin: 0 auto; }
+
+/* ── HERO ── */
+.hero {
+  margin-bottom: 2.5rem;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-lt);
+  border: 1px solid var(--accent-bdr);
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-bottom: 14px;
+}
+.hero h1 {
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.hero h1 span { color: var(--accent); }
+.hero-desc {
+  font-size: 15px;
+  color: var(--text-sec);
+  line-height: 1.7;
+  max-width: 640px;
+  margin-bottom: 1.5rem;
+}
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-sec);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 11px;
+}
+.pill svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; flex-shrink:0; }
+
+/* ── SECTION TABS ── */
+.tab-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.tab {
+  padding: 7px 14px;
+  border-radius: var(--r);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-sec);
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+  position: relative;
+}
+.tab:hover { background: var(--surface2); color: var(--text); }
+.tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tab.done   { border-color: var(--ok-bdr); color: var(--ok); background: var(--ok-bg); }
+.tab.done::after {
+  content: '✓';
+  margin-left: 5px;
+  font-size: 11px;
+}
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── OVERALL PROGRESS ── */
+.overall-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+.pbar-wrap {
+  flex: 1;
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.pbar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.pbar-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  border-bottom: none;
+}
+.sec-num {
+  width: 32px; height: 32px; min-width: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-lt);
+  border: 1px solid var(--accent-bdr);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.sec-info h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.sec-info p {
+  font-size: 13px;
+  color: var(--text-sec);
+}
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  overflow: hidden;
+}
+.q-body {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.q-num {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.q-text {
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.65;
+}
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.opts { list-style: none; }
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 1.5rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--surface);
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.55;
+  transition: background 0.1s;
+}
+.opt:last-child { border-bottom: none; }
+.opt:hover { background: var(--surface2); }
+.opt:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.opt-badge {
+  width: 22px; height: 22px; min-width: 22px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 11px; font-weight: 600;
+  color: var(--text-sec);
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+.opt.correct            { background: var(--ok-bg); color: var(--ok); pointer-events: none; }
+.opt.correct .opt-badge { background: var(--ok); border-color: var(--ok); color: #fff; }
+.opt.wrong              { background: var(--err-bg); color: var(--err); pointer-events: none; }
+.opt.wrong .opt-badge   { background: var(--err); border-color: var(--err); color: #fff; }
+.opt.reveal             { background: var(--ok-bg); color: var(--ok); pointer-events: none; opacity: 0.65; }
+.opt.reveal .opt-badge  { background: var(--ok); border-color: var(--ok); color: #fff; }
+.opt.disabled           { pointer-events: none; }
+
+.feedback {
+  display: none;
+  padding: 12px 1.5rem;
+  font-size: 13px;
+  line-height: 1.65;
+  border-top: 1px solid var(--border);
+  gap: 8px;
+  align-items: flex-start;
+}
+.feedback.show { display: flex; }
+.feedback.ok  { background: var(--ok-bg);  color: var(--ok);  border-color: var(--ok-bdr); }
+.feedback.err { background: var(--err-bg); color: var(--err); border-color: var(--err-bdr); }
+.fb-icon { font-size: 15px; flex-shrink: 0; line-height: 1.65; }
+
+/* ── FOOTER BUTTONS ── */
+.q-footer {
+  padding: 0.875rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+}
+.q-footer-left {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.q-footer-right { display: flex; gap: 8px; }
+
+.btn {
+  padding: 8px 18px;
+  border-radius: var(--r);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  transition: background 0.12s, opacity 0.12s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  display: none;
+}
+.btn-primary:hover { opacity: 0.88; background: var(--accent); }
+.btn-primary.show { display: inline-block; }
+.btn-sec-done {
+  background: var(--ok);
+  color: #fff;
+  border-color: var(--ok);
+  display: none;
+}
+.btn-sec-done:hover { opacity: 0.88; background: var(--ok); }
+.btn-sec-done.show { display: inline-block; }
+
+/* ── SECTION SCORE BANNER ── */
+.sec-result {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  gap: 12px;
+  align-items: center;
+}
+.sec-result.show { display: flex; }
+.sec-result-icon {
+  width: 36px; height: 36px; min-width: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.sec-result-icon.ok  { background: var(--ok-bg); }
+.sec-result-icon.mid { background: var(--warn-bg); }
+.sec-result-icon.err { background: var(--err-bg); }
+.sec-result-text strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.sec-result-text span   { font-size: 13px; color: var(--text-sec); }
+.sec-result-right { margin-left: auto; }
+
+/* ── FINAL RESULTS ── */
+#results { display: none; }
+#results.show { display: block; }
+
+.results-hero {
+  text-align: center;
+  padding: 2rem 1.5rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 1.5rem;
+}
+.score-big {
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--text);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.score-sub { font-size: 15px; color: var(--text-sec); margin: 8px 0 1.25rem; }
+.score-meter {
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 300px;
+  margin: 0 auto 12px;
+}
+.score-meter-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.score-msg { font-size: 14px; color: var(--text-sec); font-style: italic; }
+
+/* Section breakdown */
+.breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+.breakdown-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 12px;
+  text-align: center;
+}
+.breakdown-item .bi-score { font-size: 22px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.breakdown-item .bi-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.breakdown-item .bi-name  { font-size: 12px; color: var(--text-sec); margin-top: 4px; }
+
+/* Review */
+.review-head {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.review-sec-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sec);
+  margin: 1rem 0 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.review-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid;
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 12px 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.review-item.ok  { border-left-color: var(--ok);  background: var(--ok-bg); }
+.review-item.err { border-left-color: var(--err); background: var(--err-bg); }
+.review-q { font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.review-ans  { color: var(--text-sec); margin-bottom: 2px; }
+.review-ans span, .review-corr span { font-weight: 500; }
+.review-corr { color: var(--ok); margin-bottom: 6px; }
+.review-exp { font-size: 12px; color: var(--text-sec); border-top: 1px solid var(--border); padding-top: 6px; margin-top: 5px; font-style: italic; }
+
+.btn-restart {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 11px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s;
+  text-align: center;
+}
+.btn-restart:hover { background: var(--surface2); }
+.btn-restart:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 520px) {
+  body { padding: 1.25rem 0.75rem 2rem; }
+  .q-body, .q-footer { padding-left: 1rem; padding-right: 1rem; }
+  .opt { padding-left: 1rem; padding-right: 1rem; }
+  .feedback { padding-left: 1rem; padding-right: 1rem; }
+  .section-header { padding: 0.875rem 1rem; }
+  .score-big { font-size: 42px; }
+  .tab { font-size: 12px; padding: 6px 10px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap" role="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-eyebrow">
+      <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Tecnologia i Enginyeria II · 2n Batxillerat · CV
+    </div>
+    <h1>Programació de <span>microcontroladors</span><br>amb C++</h1>
+    <p class="hero-desc">
+      Qüestionari d'autoavaluació alineat amb el currículum de Tecnologia i Enginyeria II
+      (Decret 102/2023, Comunitat Valenciana). Les preguntes cobreixen conceptes de programació
+      en C++ aplicats a sistemes encastats, comparant l'arquitectura i les capacitats de
+      l'Arduino UNO (ATmega328P) i l'ESP32, amb especial atenció a perifèrics, memòria,
+      connectivitat i programació concorrent.
+    </p>
+    <div class="hero-meta">
+      <span class="pill">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        25 preguntes
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        5 seccions
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Retroalimentació immediata
+      </span>
+    </div>
+  </header>
+
+  <!-- SECTION TABS -->
+  <nav class="tab-bar" role="tablist" aria-label="Seccions del qüestionari" id="tabbar"></nav>
+
+  <!-- OVERALL PROGRESS -->
+  <div class="overall-progress" aria-label="Progrés global">
+    <div class="pbar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="25" id="pbar-global">
+      <div class="pbar-fill" id="pfill" style="width:0%"></div>
+    </div>
+    <span class="pbar-label" id="plabel">0 / 25 respostes</span>
+  </div>
+
+  <!-- QUIZ AREA -->
+  <div id="quiz-area">
+    <div class="section-header" id="sec-header">
+      <div class="sec-num" id="sec-num">1</div>
+      <div class="sec-info">
+        <h2 id="sec-title"></h2>
+        <p id="sec-desc"></p>
+      </div>
+    </div>
+    <section class="q-card" id="qcard" aria-label="Pregunta actual">
+      <div class="q-body">
+        <div class="q-num" id="qnum"></div>
+        <p class="q-text" id="qtext"></p>
+      </div>
+      <ul class="opts" id="opts" role="list"></ul>
+      <div class="feedback" id="feedback" aria-live="polite" aria-atomic="true">
+        <span class="fb-icon" id="fb-icon"></span>
+        <span id="fb-text"></span>
+      </div>
+      <div class="q-footer">
+        <span class="q-footer-left" id="q-counter"></span>
+        <div class="q-footer-right">
+          <button class="btn btn-primary" id="btn-next" type="button">Següent →</button>
+          <button class="btn btn-sec-done" id="btn-sec-end" type="button"></button>
+        </div>
+      </div>
+    </section>
+    <div class="sec-result" id="sec-result" role="status" aria-live="polite">
+      <div class="sec-result-icon" id="sr-icon"></div>
+      <div class="sec-result-text">
+        <strong id="sr-strong"></strong>
+        <span id="sr-span"></span>
+      </div>
+      <div class="sec-result-right">
+        <button class="btn btn-primary show" id="btn-next-sec" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" aria-label="Resultats finals">
+    <div class="results-hero">
+      <div class="score-big" id="score-big"></div>
+      <div class="score-sub" id="score-sub"></div>
+      <div class="score-meter"><div class="score-meter-fill" id="score-fill"></div></div>
+      <div class="score-msg" id="score-msg"></div>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="review-head">Retroalimentació per secció</div>
+    <div id="review-list"></div>
+    <button class="btn-restart" type="button" onclick="restart()">↺ Tornar a començar</button>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+const SECTIONS = [
+  {
+    num: 1,
+    title: "Arquitectura i hardware",
+    desc: "Comparació de processadors, memòria, GPIO i alimentació",
+    qs: [
+      {
+        q: "Quina és la freqüència de rellotge màxima de l'ESP32 i del microcontrolador ATmega328P de l'Arduino UNO?",
+        opts: ["ESP32: 80 MHz / ATmega328P: 8 MHz","ESP32: 240 MHz / ATmega328P: 16 MHz","ESP32: 16 MHz / ATmega328P: 240 MHz","ESP32: 120 MHz / ATmega328P: 32 MHz"],
+        ans: 1,
+        exp: "L'ESP32 incorpora un processador dual-core Xtensa LX6 configurable fins a 240 MHz. L'Arduino UNO usa l'ATmega328P, un microcontrolador AVR de 8 bits que funciona a 16 MHz amb un oscil·lador extern de cristall."
+      },
+      {
+        q: "Quina tensió d'alimentació dels pins GPIO distingeix l'ESP32 de l'Arduino UNO, i quina implicació pràctica té?",
+        opts: ["Ambdós treballen a 5 V; no hi ha cap diferència","L'ESP32 treballa a 3,3 V; connectar senyals de 5 V directament pot danyar-lo","L'Arduino UNO treballa a 3,3 V; l'ESP32 a 5 V","Ambdós accepten de 1,8 V a 5,5 V sense cap adaptació"],
+        ans: 1,
+        exp: "L'ESP32 és un dispositiu de 3,3 V i els seus pins GPIO NO toleren 5 V. L'Arduino UNO treballa a 5 V. Per interfaçar-los cal un divisor de tensió o un convertidor de nivell lògic per no malmetre l'ESP32."
+      },
+      {
+        q: "Quanta memòria Flash de programa té l'ESP32 WROOM-32 en comparació amb l'Arduino UNO?",
+        opts: ["ESP32: 32 KB / Arduino UNO: 4 MB","ESP32: 4 MB / Arduino UNO: 32 KB","Ambdós: 256 KB","ESP32: 512 KB / Arduino UNO: 128 KB"],
+        ans: 1,
+        exp: "L'ESP32 WROOM-32 incorpora 4 MB de memòria Flash SPI externa. L'Arduino UNO té 32 KB de Flash interna a l'ATmega328P. Aquesta diferència de ×125 permet emmagatzemar sistemes de fitxers, pàgines web o actualitzacions OTA a l'ESP32."
+      },
+      {
+        q: "Quina és la resolució de l'ADC de l'ESP32 per defecte, i com es diferencia de la de l'Arduino UNO?",
+        opts: ["ESP32: 8 bits (0–255) / Arduino UNO: 12 bits (0–4095)","ESP32: 12 bits (0–4095) / Arduino UNO: 10 bits (0–1023)","Ambdós: 10 bits (0–1023)","ESP32: 16 bits / Arduino UNO: 8 bits"],
+        ans: 1,
+        exp: "L'ESP32 té un ADC de 12 bits (valors 0–4095) que ofereix major resolució que el de 10 bits de l'Arduino UNO (0–1023). Atenció: l'ADC de l'ESP32 presenta una certa no linealitat que cal compensar en aplicacions de precisió."
+      },
+      {
+        q: "Quantes UART hardware disposa l'ESP32, i quantes té l'Arduino UNO?",
+        opts: ["ESP32: 1 / Arduino UNO: 3","ESP32: 3 (UART0, UART1, UART2) / Arduino UNO: 1","Ambdós: 2","ESP32: 2 / Arduino UNO: 1"],
+        ans: 1,
+        exp: "L'ESP32 té 3 UART hardware: UART0 (depuració/càrrega), UART1 i UART2 (usos generals). L'Arduino UNO només té 1 UART hardware. Tenir-ne 3 permet comunicar-se simultàniament amb múltiples mòduls (GPS, GSM, Bluetooth extern) sense emular ports per software."
+      }
+    ]
+  },
+  {
+    num: 2,
+    title: "Fonaments de programació C++",
+    desc: "Funcions bàsiques, tipus de dades, I/O digital i analògica",
+    qs: [
+      {
+        q: "Quina és la diferència entre les funcions setup() i loop() en Arduino Framework?",
+        opts: ["setup() s'executa en bucle; loop() s'executa una vegada","setup() s'executa una vegada en arrencar; loop() s'executa indefinidament","Ambdues s'executen una sola vegada","loop() s'executa només si setup() retorna true"],
+        ans: 1,
+        exp: "setup() s'executa una sola vegada en l'arrencada (o rearranc) del microcontrolador. S'utilitza per inicialitzar pins, biblioteques i perifèrics. loop() s'executa indefinidament a continuació i conté la lògica principal del programa. Aquesta estructura és idèntica a Arduino UNO i ESP32."
+      },
+      {
+        q: "Quina instrucció C++ configura el pin 9 com a entrada amb resistència pull-up interna en Arduino Framework?",
+        opts: ["pinMode(9, OUTPUT);","digitalWrite(9, HIGH);","pinMode(9, INPUT_PULLUP);","analogWrite(9, 255);"],
+        ans: 2,
+        exp: "pinMode(9, INPUT_PULLUP) configura el pin com a entrada i activa la resistència de pull-up interna (~20-50 kΩ a l'ATmega328P, ~45 kΩ a l'ESP32). Amb pull-up, el pin llegeix HIGH quan el botó no es prem i LOW quan es prem (lògica inversa). Evita resistències externes."
+      },
+      {
+        q: "Quin és el valor màxim que retorna analogRead() a l'Arduino UNO i a l'ESP32 (configuració per defecte)?",
+        opts: ["Arduino UNO: 4095 / ESP32: 1023","Arduino UNO: 1023 / ESP32: 4095","Ambdós: 255","Ambdós: 1023"],
+        ans: 1,
+        exp: "L'Arduino UNO té un ADC de 10 bits: retorna valors de 0 a 1023. L'ESP32 té un ADC de 12 bits: retorna 0 a 4095. Cal tenir-ho en compte en calcular tensions (V = lectura × Vref / max) per no cometre errors de factor en els càlculs."
+      },
+      {
+        q: "Quina diferència hi ha entre delay(1000) i millis() per gestionar temps en un microcontrolador?",
+        opts: ["delay() és no bloquejant; millis() és bloquejant","millis() retorna el temps transcorregut i permet codi no bloquejant; delay() paralitza tota l'execució","millis() és més precisa però ocupa més memòria","No hi ha cap diferència funcional"],
+        ans: 1,
+        exp: "delay() atura l'execució del processador durant el temps especificat: durant aquest temps no es pot llegir sensors, atendre interrupcions per software ni executar cap altra tasca. millis() retorna els mil·lisegons transcorreguts des del rearranc i permet implementar temporitzadors no bloquejants, essencials en sistemes reactius."
+      },
+      {
+        q: "En C++ per a microcontroladors, per a qué s'utilitza el qualificador volatile en una variable?",
+        opts: ["Per guardar-la en la memòria Flash en lloc de la RAM","Per indicar al compilador que la variable pot canviar fora del flux normal (p.ex. en una ISR), evitant optimitzacions incorrectes","Per fer la variable de tipus enter de 32 bits","Per declarar una variable constant que no pot modificar-se"],
+        ans: 1,
+        exp: "El compilador C++ pot «memoritzar» el valor d'una variable en un registre per eficiència. Si una ISR modifica la variable, el codi principal podria usar el valor antic (en caché). volatile força el compilador a llegir sempre el valor directament de la memòria, garantint coherència en variables compartides entre ISR i codi principal."
+      }
+    ]
+  },
+  {
+    num: 3,
+    title: "Connectivitat i perifèrics avançats",
+    desc: "Wi-Fi, Bluetooth, interrupcions i comunicació sèrie",
+    qs: [
+      {
+        q: "Quina biblioteca i mètode s'utilitzen per connectar l'ESP32 a una xarxa Wi-Fi en Arduino Framework?",
+        opts: ["#include <Ethernet.h> i Ethernet.begin(ssid, pass)","#include <WiFi.h> i WiFi.begin(ssid, password)","#include <ESP32Net.h> i ESP32.connect(ssid)","#include <Network.h> i Network.start(ssid, pass)"],
+        ans: 1,
+        exp: "La biblioteca WiFi.h (inclosa en el paquet ESP32 per a Arduino) proporciona WiFi.begin(ssid, password) per iniciar la connexió. L'estat es comprova amb WiFi.status() == WL_CONNECTED. L'Arduino UNO no té Wi-Fi integrat i requeriria un mòdul extern com l'ESP8266 com a coprocessador."
+      },
+      {
+        q: "Com s'adjunta una rutina de servei d'interrupció (ISR) a un pin GPIO en Arduino Framework?",
+        opts: ["interrupt(pin, ISR, RISING);","attachInterrupt(digitalPinToInterrupt(pin), myISR, RISING);","setInterrupt(pin, myISR, RISING);","ISR.attach(pin, RISING);"],
+        ans: 1,
+        exp: "attachInterrupt(digitalPinToInterrupt(pin), myISR, mode) és la funció estàndard. digitalPinToInterrupt() converteix el número de pin al número d'interrupció corresponent (necessari perquè a l'Arduino UNO no tots els pins suporten interrupcions). El mode pot ser RISING, FALLING, CHANGE o LOW."
+      },
+      {
+        q: "A l'ESP32, per qué les ISR s'han de declarar amb l'atribut IRAM_ATTR?",
+        opts: ["Per augmentar la freqüència del pin durant la interrupció","Per forçar que el codi de la ISR s'emmagatzemi i s'executi des de la IRAM (memòria interna ràpida) i no des de la Flash externa, que pot estar en caché o accés lent","Per desactivar el mode de baix consum durant la ISR","Per habilitar el doble nucli durant la interrupció"],
+        ans: 1,
+        exp: "L'ESP32 executa el codi des de la Flash externa (SPI Flash), però l'accés pot ser lent o estar en caché. Les interrupcions requereixen temps de resposta mínim. IRAM_ATTR força que la funció residisca en la IRAM (Internal RAM, 192 KB) que té accés d'un sol cicle, garantint latències baixes i reproducibles."
+      },
+      {
+        q: "Quin problema específic de l'ESP32 afecta les lectures de l'ADC quan el Wi-Fi està actiu?",
+        opts: ["El Wi-Fi redueix la freqüència de mostreig a 100 Hz","L'ADC2 (pins GPIO0, 2, 4, 12–15, 25–27) no pot usar-se mentre el Wi-Fi està actiu; cal usar l'ADC1 (GPIO32–39)","El Wi-Fi desactiva completament tots els ADC de l'ESP32","No hi ha cap interferència entre Wi-Fi i ADC"],
+        ans: 1,
+        exp: "L'ADC2 de l'ESP32 comparteix recursos de hardware amb el driver Wi-Fi. Quan el Wi-Fi està actiu, els intents de lectura per l'ADC2 retornen errors o valors incorrectes. La solució és usar els pins de l'ADC1 (GPIO32 a GPIO39) per a totes les lectures analògiques quan es necessita Wi-Fi simultàniament."
+      },
+      {
+        q: "Com s'utilitza el Bluetooth Classic de l'ESP32 per enviar dades com si fos un port sèrie?",
+        opts: ["#include <BLE.h> i BLE.println(dada)","#include <BluetoothSerial.h>, declarar BluetoothSerial SerialBT i usar SerialBT.println(dada)","#include <BT.h> i Serial2.begin(BT_MODE)","No és possible sense hardware Bluetooth extern"],
+        ans: 1,
+        exp: "La biblioteca BluetoothSerial.h, inclosa en el paquet Arduino per a ESP32, implementa el perfil SPP (Serial Port Profile). Es declara un objecte BluetoothSerial, s'inicia amb SerialBT.begin(\"NomDispositiu\") i s'usen mètodes com println(), disponibles(), i read(). L'Arduino UNO no té Bluetooth integrat."
+      }
+    ]
+  },
+  {
+    num: 4,
+    title: "Sistemes encastats i FreeRTOS",
+    desc: "Programació concurrent, watchdog i gestió de memòria",
+    qs: [
+      {
+        q: "Quin sistema operatiu en temps real (RTOS) integra l'ESP32 i quina funció s'usa per crear tasques?",
+        opts:["ThreadX i osThreadNew()","FreeRTOS i xTaskCreate() o xTaskCreatePinnedToCore()","Zephyr i k_thread_create()","RIOT-OS i thread_create()"],
+        ans: 1,
+        exp: "L'ESP32 inclou FreeRTOS com a part del seu framework (ESP-IDF). xTaskCreate() crea una tasca que pot executar-se «simultàniament» (en realitat, de forma preemptiva). xTaskCreatePinnedToCore() permet assignar la tasca a un nucli específic (0 o 1). L'Arduino UNO no disposa d'RTOS integrat."
+      },
+      {
+        q: "Per qué usar delay() llargs dins d'una tasca FreeRTOS a l'ESP32 pot causar un reinici del sistema?",
+        opts: ["delay() allibera memòria que FreeRTOS necessita","delay() bloqueja el processador i impedeix que el Watchdog Timer (WDT) es reseti dins el temps establert, provocant un reinici per seguretat","delay() canvia la prioritat de la tasca a 0 i el planificador la elimina","delay() és incompatible amb FreeRTOS en l'ESP32"],
+        ans: 1,
+        exp: "L'ESP32 té un Watchdog Timer de tasca. Si una tasca no cedeix el control al planificador FreeRTOS dins d'un interval (per defecte ~5 s), el WDT reinicia el sistema. delay() de l'Arduino Framework es mapeja a vTaskDelay(), però blocs molt llargs o bucles buits sense yield() poden disparar el WDT. La solució és usar vTaskDelay() explícitament."
+      },
+      {
+        q: "Com s'emmagatzemen dades de forma persistent en l'ESP32 perquè sobrevisquen a un tall de corrent?",
+        opts: ["EEPROM.put(), exactament igual que a l'Arduino UNO","Amb la biblioteca Preferences i funcions com putInt(), putString(), etc., que usen la partició NVS de la Flash","Escrivint directament en adreces de la RAM estàtica","Amb la funció nvs_write() de la llibreria libc estàndard"],
+        ans: 1,
+        exp: "L'ESP32 usa la biblioteca Preferences (basada en el sistema NVS d'ESP-IDF) per emmagatzemar parells clau-valor en una partició de la Flash. L'Arduino UNO usa la biblioteca EEPROM (memòria EEPROM interna del ATmega328P, ~1 KB). Tots dos sistemes persisteixen dades davant de talls de corrent."
+      },
+      {
+        q: "Quin és el framework de desenvolupament oficial d'Espressif per a l'ESP32 que ofereix accés complet al hardware sense la capa d'abstracció Arduino?",
+        opts: ["ESP-SDK","ESP-IDF (Espressif IoT Development Framework)","ESP-RTOS","Arduino-ESP Core"],
+        ans: 1,
+        exp: "ESP-IDF és el framework oficial d'Espressif basat en FreeRTOS. Ofereix accés complet a tots els drivers, particions de memòria, modes de baix consum, seguretat i perifèrics de l'ESP32. Arduino Framework per a ESP32 és una capa d'abstracció que s'executa sobre ESP-IDF, simplificant el desenvolupament a cost de menys control."
+      },
+      {
+        q: "En el context de FreeRTOS a l'ESP32, quin mecanisme s'usa per passar dades de forma segura entre dues tasques concurrents?",
+        opts: ["Variables globals amb volatile","Cues (Queues) de FreeRTOS: xQueueCreate(), xQueueSend() i xQueueReceive()","Funcions d'interrupció compartides","Semàfors binaris únicament"],
+        ans: 1,
+        exp: "Les Queues (cues) de FreeRTOS són el mecanisme preferit per passar dades entre tasques de manera segura (thread-safe). xQueueCreate() crea la cua, xQueueSend() hi afegeix elements i xQueueReceive() els consumeix. Les variables globals amb volatile no garanteixen atomicitat en operacions de múltiples bytes i poden generar condicions de carrera."
+      }
+    ]
+  },
+  {
+    num: 5,
+    title: "Aplicacions i bones pràctiques",
+    desc: "Servidors web, actualitzacions OTA, depuració i disseny de sistemes",
+    qs: [
+      {
+        q: "Quina biblioteca permet crear un servidor HTTP senzill a l'ESP32 en Arduino Framework?",
+        opts: ["#include <Ethernet.h> (igual que a Arduino UNO)","#include <WebServer.h> i crear un objecte WebServer server(80)","#include <HTTP.h> i usar HTTP.listen(80)","#include <TCPServer.h> i usar server.bind(80)"],
+        ans: 1,
+        exp: "La biblioteca WebServer.h (inclosa en el paquet ESP32 per a Arduino) permet crear servidors HTTP en poques línies. Es defineix l'objecte WebServer server(80), es registren manejadors de rutes amb server.on(\"/ruta\", callback) i s'inicia amb server.begin(). L'Arduino UNO no pot fer-ho sense un shield Ethernet o Wi-Fi extern."
+      },
+      {
+        q: "Qué significa OTA (Over-The-Air) en el context de l'ESP32 i quin avantatge ofereix respecte a l'Arduino UNO?",
+        opts: ["És un estàndard de comunicació Bluetooth per a dispositius IoT","Permet actualitzar el firmware de l'ESP32 via Wi-Fi sense connexió física per cable; l'Arduino UNO no suporta OTA sense hardware addicional","Optimitza el codi en temps real mentre s'executa","És un mode de baix consum que redueix el consum a 10 µA"],
+        ans: 1,
+        exp: "OTA (Over-The-Air) permet enviar un nou firmware a l'ESP32 a través de la xarxa Wi-Fi, sense necessitat de connexió USB. Resulta essencial en dispositius IoT desplegats en ubicacions de difícil accés. La biblioteca ArduinoOTA simplifica la implementació. L'Arduino UNO, sense Wi-Fi integrat, no admet OTA natiu."
+      },
+      {
+        q: "En un sistema encastat amb Arduino, quina pràctica és recomanable per evitar problemes de memòria amb cadenes de text constants?",
+        opts: ["Usar sempre tipus char* en lloc de String","Emmagatzemar les cadenes literals en la Flash amb la macro F() per no ocupar RAM: Serial.println(F(\"Hola\"))","Declarar totes les cadenes com a variables globals","Usar memcpy() en lloc d'assignació directa"],
+        ans: 1,
+        exp: "En l'ATmega328P (Arduino UNO) la RAM és molt limitada (2 KB). Per defecte, les cadenes literals s'emmagatzemen en la RAM. La macro F() força l'emmagatzematge a la Flash, estalviant RAM. A l'ESP32 (512 KB de RAM) no és tan crític, però segueix sent una bona pràctica. L'ESP32 també suporta F() per compatibilitat."
+      },
+      {
+        q: "En quin ordre s'han de comprovar les connexions quan un sensor analògic dona lectures erràtiques en un circuit amb ESP32?",
+        opts: ["Primer reinstal·lar l'IDE, després revisar el codi","Primer verificar la tensió d'alimentació (3,3 V) i les connexions físiques; comprovar que no s'usa ADC2 amb Wi-Fi actiu; revisar el codi de conversió de la lectura a unitats físiques","Substituir immediatament el sensor per un de nou","Augmentar la freqüència de mostreig per obtenir més dades"],
+        ans: 1,
+        exp: "Un procés sistemàtic de depuració hardware inclou: (1) verificar la tensió de referència (3,3 V, no 5 V) i les connexions; (2) comprovar que el pin pertany a l'ADC1 si el Wi-Fi està actiu; (3) revisar la fórmula de conversió (V = lectura × 3,3 / 4095); (4) afegir filtrat de senyal si cal. Seguir un ordre evita substituir components innecessàriament."
+      },
+      {
+        q: "Quina és la diferència fonamental entre la programació orientada a events (interrupcions) i el polling continu en sistemes encastats?",
+        opts: ["El polling és sempre millor perquè no interromp l'execució principal","Les interrupcions responen a events de forma immediata i eficient energèticament; el polling comprova contínuament l'estat d'un pin en el loop() consumint cicles de CPU innecessàriament quan no hi ha canvis","El polling és més ràpid que les interrupcions en tots els casos","No hi ha diferència pràctica en microcontroladors moderns"],
+        ans: 1,
+        exp: "En el polling, el microcontrolador comprova constantment l'estat d'un pin en cada iteració del loop(), consumint CPU fins i tot quan no hi ha cap event. Amb interrupcions, el hardware avisa el processador quan es produeix el canvi, alliberant la CPU per altres tasques i reduint el consum energètic. En sistemes de baix consum (mode sleep a l'ESP32) les interrupcions són imprescindibles."
+      }
+    ]
+  }
+];
+
+// ── State ──────────────────────────────────────────────────────────
+let curSec = 0, curQ = 0, answered = false;
+let secAnswers = SECTIONS.map(s => s.qs.map(() => null)); // null | {ok, chosen, correct, exp, q}
+let secDone    = SECTIONS.map(() => false);
+
+const LETTERS = ['A','B','C','D'];
+const totalQ  = SECTIONS.reduce((a, s) => a + s.qs.length, 0);
+
+// ── Build tabs ─────────────────────────────────────────────────────
+function buildTabs() {
+  const bar = document.getElementById('tabbar');
+  bar.innerHTML = '';
+  SECTIONS.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === curSec ? ' active' : '') + (secDone[i] ? ' done' : '');
+    btn.textContent = `${s.num}. ${s.title}`;
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-selected', i === curSec ? 'true' : 'false');
+    btn.type = 'button';
+    btn.onclick = () => goSection(i);
+    bar.appendChild(btn);
+  });
+}
+
+// ── Overall progress ───────────────────────────────────────────────
+function updateProgress() {
+  const done = secAnswers.flat().filter(a => a !== null).length;
+  const pct  = Math.round((done / totalQ) * 100);
+  document.getElementById('pfill').style.width = pct + '%';
+  document.getElementById('plabel').textContent = `${done} / ${totalQ} respostes`;
+  document.getElementById('pbar-global').setAttribute('aria-valuenow', done);
+}
+
+// ── Render question ────────────────────────────────────────────────
+function render() {
+  const sec = SECTIONS[curSec];
+  const q   = sec.qs[curQ];
+  const prev = secAnswers[curSec][curQ];
+
+  document.getElementById('sec-num').textContent   = sec.num;
+  document.getElementById('sec-title').textContent = sec.title;
+  document.getElementById('sec-desc').textContent  = sec.desc;
+  document.getElementById('qnum').textContent      = `Secció ${sec.num} · Pregunta ${curQ + 1} de ${sec.qs.length}`;
+  document.getElementById('qtext').innerHTML       = q.q;
+  document.getElementById('q-counter').textContent = `${curQ + 1} / ${sec.qs.length}`;
+
+  const ul = document.getElementById('opts');
+  ul.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const li  = document.createElement('li');
+    li.setAttribute('role','listitem');
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.type = 'button';
+    btn.innerHTML = `<span class="opt-badge">${LETTERS[i]}</span><span>${o}</span>`;
+    if (prev !== null) {
+      btn.classList.add('disabled');
+      if (i === q.ans)             btn.classList.add('correct');
+      else if (i === prev.chosenIdx && prev.chosenIdx !== q.ans) btn.classList.add('wrong');
+    } else {
+      btn.onclick = () => select(i);
+    }
+    li.appendChild(btn);
+    ul.appendChild(li);
+  });
+
+  // Restore feedback
+  const fb = document.getElementById('feedback');
+  if (prev !== null) {
+    fb.className = 'feedback show ' + (prev.ok ? 'ok' : 'err');
+    document.getElementById('fb-icon').textContent = prev.ok ? '✓' : '✗';
+    document.getElementById('fb-text').textContent = (prev.ok ? 'Correcte! ' : 'Incorrecte. ') + prev.exp;
+    showNavButtons(true);
+  } else {
+    fb.className = 'feedback';
+    document.getElementById('fb-icon').textContent = '';
+    document.getElementById('fb-text').textContent = '';
+    showNavButtons(false);
+  }
+
+  // Section result banner
+  const sr = document.getElementById('sec-result');
+  sr.className = 'sec-result';
+
+  buildTabs();
+  updateProgress();
+  answered = (prev !== null);
+}
+
+function showNavButtons(show) {
+  const isLast = curQ === SECTIONS[curSec].qs.length - 1;
+  const isLastSec = curSec === SECTIONS.length - 1;
+  const bn = document.getElementById('btn-next');
+  const bs = document.getElementById('btn-sec-end');
+
+  if (show) {
+    if (!isLast) {
+      bn.className = 'btn btn-primary show';
+      bn.textContent = 'Següent →';
+      bs.className = 'btn btn-sec-done';
+    } else {
+      bn.className = 'btn btn-primary';
+      bs.className = 'btn btn-sec-done show';
+      bs.textContent = isLastSec ? 'Veure resultats →' : 'Finalitzar secció →';
+    }
+  } else {
+    bn.className = 'btn btn-primary';
+    bs.className = 'btn btn-sec-done';
+  }
+}
+
+// ── Select answer ──────────────────────────────────────────────────
+function select(i) {
+  if (answered) return;
+  answered = true;
+  const sec = SECTIONS[curSec];
+  const q   = sec.qs[curQ];
+  const ok  = (i === q.ans);
+
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach((b, idx) => {
+    b.classList.add('disabled');
+    if (idx === q.ans) b.classList.add('correct');
+    else if (idx === i && !ok) b.classList.add('wrong');
+  });
+
+  secAnswers[curSec][curQ] = {
+    ok, chosenIdx: i,
+    chosen: q.opts[i], correct: q.opts[q.ans],
+    exp: q.exp, q: q.q
+  };
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  document.getElementById('fb-icon').textContent = ok ? '✓' : '✗';
+  document.getElementById('fb-text').textContent = (ok ? 'Correcte! ' : 'Incorrecte. ') + q.exp;
+
+  updateProgress();
+  showNavButtons(true);
+}
+
+// ── Navigation ─────────────────────────────────────────────────────
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (curQ < SECTIONS[curSec].qs.length - 1) { curQ++; render(); }
+});
+
+document.getElementById('btn-sec-end').addEventListener('click', () => {
+  finishSection();
+});
+
+document.getElementById('btn-next-sec').addEventListener('click', () => {
+  const nxt = parseInt(document.getElementById('btn-next-sec').dataset.next, 10);
+  if (nxt >= SECTIONS.length) { showResults(); return; }
+  goSection(nxt);
+});
+
+function finishSection() {
+  secDone[curSec] = true;
+  const score = secAnswers[curSec].filter(a => a && a.ok).length;
+  const total = SECTIONS[curSec].qs.length;
+  const pct   = Math.round(score / total * 100);
+  const isLast = curSec === SECTIONS.length - 1;
+
+  const sr = document.getElementById('sec-result');
+  sr.className = 'sec-result show';
+  const icon = document.getElementById('sr-icon');
+  if (pct >= 80)      { icon.className = 'sec-result-icon ok'; icon.textContent = '🏆'; }
+  else if (pct >= 60) { icon.className = 'sec-result-icon mid'; icon.textContent = '👍'; }
+  else                { icon.className = 'sec-result-icon err'; icon.textContent = '📖'; }
+
+  const msgs = [
+    [80, 101, `Excel·lent! Has encertat ${score} de ${total} preguntes.`],
+    [60,  80, `Bé! ${score}/${total} correctes. Repassa els punts fallats.`],
+    [0,   60, `${score}/${total} correctes. Convé revisar el material d'aquesta secció.`]
+  ];
+  const m = msgs.find(([lo, hi]) => pct >= lo && pct < hi);
+  document.getElementById('sr-strong').textContent = m[2];
+  document.getElementById('sr-span').textContent = isLast ? '' : `Pots continuar amb la secció ${curSec + 2}.`;
+
+  const nb = document.getElementById('btn-next-sec');
+  nb.dataset.next = curSec + 1;
+  nb.textContent  = isLast ? 'Veure resultats finals →' : `Secció ${curSec + 2} →`;
+
+  buildTabs();
+  // scroll to banner
+  sr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function goSection(i) {
+  curSec = i;
+  // go to first unanswered or first
+  const firstUnanswered = secAnswers[i].findIndex(a => a === null);
+  curQ = firstUnanswered >= 0 ? firstUnanswered : 0;
+  document.getElementById('sec-result').className = 'sec-result';
+  render();
+  document.getElementById('sec-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Results ────────────────────────────────────────────────────────
+function showResults() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('tabbar').style.display    = 'none';
+  document.getElementById('overall-progress-row')?.style && null;
+
+  const res = document.getElementById('results');
+  res.className = 'show';
+
+  const flat  = secAnswers.flat().filter(a => a !== null);
+  const total = flat.length;
+  const score = flat.filter(a => a.ok).length;
+  const pct   = Math.round(score / total * 100);
+
+  document.getElementById('score-big').textContent = `${score} / ${total}`;
+  document.getElementById('score-sub').textContent = `${pct}% de respostes correctes`;
+
+  const fill = document.getElementById('score-fill');
+  fill.style.width = '0%';
+  fill.style.background = pct >= 80 ? '#1a6e40' : pct >= 60 ? '#8a5a00' : '#b83030';
+  setTimeout(() => { fill.style.width = pct + '%'; }, 100);
+
+  const msgs = [
+    [0,  40,  "Convé repassar tot el material. Torna-ho a intentar!"],
+    [40, 60,  "Coneixements bàsics assolits. Reforça les seccions amb menys puntuació."],
+    [60, 80,  "Bon nivell! Uns quants conceptes avançats encara per consolidar."],
+    [80, 100, "Excel·lent domini dels microcontroladors. Continua així!"]
+  ];
+  const m = msgs.find(([lo, hi]) => pct >= lo && pct <= hi);
+  document.getElementById('score-msg').textContent = m ? m[2] : '';
+
+  // Breakdown per section
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = '';
+  SECTIONS.forEach((sec, i) => {
+    const s = secAnswers[i].filter(a => a && a.ok).length;
+    const t = sec.qs.length;
+    const p = Math.round(s / t * 100);
+    const d = document.createElement('div');
+    d.className = 'breakdown-item';
+    d.innerHTML = `<div class="bi-score">${s}/${t}</div><div class="bi-label">${p}%</div><div class="bi-name">${sec.title}</div>`;
+    bd.appendChild(d);
+  });
+
+  // Review
+  const rev = document.getElementById('review-list');
+  rev.innerHTML = '';
+  SECTIONS.forEach((sec, si) => {
+    const secTitle = document.createElement('div');
+    secTitle.className = 'review-sec-title';
+    secTitle.textContent = `Secció ${sec.num}: ${sec.title}`;
+    rev.appendChild(secTitle);
+    secAnswers[si].forEach((a, qi) => {
+      if (!a) return;
+      const d = document.createElement('div');
+      d.className = 'review-item ' + (a.ok ? 'ok' : 'err');
+      let html = `<div class="review-q">${qi + 1}. ${a.q}</div>`;
+      if (!a.ok) {
+        html += `<div class="review-ans">La teua resposta: <span>${a.chosen}</span></div>`;
+        html += `<div class="review-corr">Resposta correcta: <span>${a.correct}</span></div>`;
+      }
+      html += `<div class="review-exp">${a.exp}</div>`;
+      d.innerHTML = html;
+      rev.appendChild(d);
+    });
+  });
+
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Restart ────────────────────────────────────────────────────────
+function restart() {
+  curSec     = 0; curQ = 0; answered = false;
+  secAnswers = SECTIONS.map(s => s.qs.map(() => null));
+  secDone    = SECTIONS.map(() => false);
+  document.getElementById('results').className    = '';
+  document.getElementById('quiz-area').style.display = '';
+  document.getElementById('tabbar').style.display    = '';
+  document.getElementById('sec-result').className    = 'sec-result';
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Init ───────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

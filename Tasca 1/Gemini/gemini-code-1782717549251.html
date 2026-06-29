@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qüestionari C++: Arduino vs ESP32</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --accent-color: #007791;
+            --accent-light: #e6f7f9;
+            --correct-color: #27ae60;
+            --correct-bg: #e8f8f0;
+            --incorrect-color: #c0392b;
+            --incorrect-bg: #fceae9;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--accent-color), #004d61);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .quiz-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            margin-bottom: 10px;
+        }
+
+        .option-item label {
+            display: block;
+            padding: 12px 15px;
+            background-color: var(--bg-color);
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-item label:hover {
+            background-color: var(--accent-light);
+            border-color: var(--accent-color);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: var(--correct-bg);
+            color: var(--correct-color);
+            border: 1px solid var(--correct-color);
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background-color: var(--incorrect-bg);
+            color: var(--incorrect-color);
+            border: 1px solid var(--incorrect-color);
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #005f75;
+        }
+
+        #result-summary {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid var(--accent-color);
+        }
+
+        #result-summary h2 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Qüestionari Tècnic: C++ per a Arduino vs ESP32</h1>
+        <p>Posa a prova els teus coneixements sobre arquitectura, FreeRTOS i microcontroladors</p>
+    </header>
+
+    <form id="quiz-form">
+        <div class="quiz-card" data-question="1">
+            <div class="question-text">1. Quina és la principal diferència d'arquitectura pel que fa a la CPU entre un Arduino Uno clàssic (ATmega328P) i un ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q1" value="a"> a) Arduino és de 16 bits i ESP32 és de 32 bits.</label></li>
+                <li class="option-item"><label><input type="radio" name="q1" value="b"> b) Arduino és de 8 bits (un sol nucli) i ESP32 és de 32 bits (generalment de doble nucli).</label></li>
+                <li class="option-item"><label><input type="radio" name="q1" value="c"> c) Arduino utilitza arquitectura ARM i ESP32 utilitza Xtensa.</label></li>
+                <li class="option-item"><label><input type="radio" name="q1" value="d"> d) Ambdós són de 32 bits, però ESP32 té més memòria Flash.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> L'ESP32 fa un salt de gegant en potència de càlcul passant d'un xip de 8 bits a un processador Xtensa de 32 bits (normalment dual-core), la qual cosa permet un autèntic paral·lelisme mitjançant multitasca.
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" id="submit-btn" class="btn">Corregir Qüestionari</button>
+        </div>
+    </form>
+
+    <div id="result-summary">
+        <h2>Resultat del Qüestionari</h2>
+        <div class="score-display" id="score-text">0 / 25</div>
+        <p id="percentage-text">0% encerts</p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('submit-btn').addEventListener('click', function() {
+        const form = document.getElementById('quiz-form');
+        const cards = document.querySelectorAll('.quiz-card');
+        let score = 0;
+        const total = cards.length;
+
+        cards.forEach(card => {
+            const qNum = card.getAttribute('data-question');
+            const selectedOption = form.querySelector(`input[name="q${qNum}"]:checked`);
+            const feedbackDiv = card.querySelector('.feedback');
+            const correctValue = feedbackDiv.getAttribute('data-correct');
+
+            if (selectedOption) {
+                const userAns = selectedOption.value;
+                if (userAns === correctValue) {
+                    score++;
+                    feedbackDiv.className = "feedback correct";
+                } else {
+                    feedbackDiv.className = "feedback incorrect";
+                }
+            } else {
+                feedbackDiv.className = "feedback incorrect";
+            }
+        });
+
+        const resultSummary = document.getElementById('result-summary');
+        document.getElementById('score-text').textContent = `${score} / ${total}`;
+        document.getElementById('percentage-text').textContent = `${Math.round((score / total) * 100)}% d'encerts`;
+        resultSummary.style.display = 'block';
+        resultSummary.scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+</body>
+</html>

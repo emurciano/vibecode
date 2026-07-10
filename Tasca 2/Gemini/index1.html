@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qüestionari C++: Arduino vs ESP32</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --accent-color: #007791;
+            --accent-light: #e6f7f9;
+            --correct-color: #27ae60;
+            --correct-bg: #e8f8f0;
+            --incorrect-color: #c0392b;
+            --incorrect-bg: #fceae9;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--accent-color), #004d61);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .quiz-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            margin-bottom: 10px;
+        }
+
+        .option-item label {
+            display: block;
+            padding: 12px 15px;
+            background-color: var(--bg-color);
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-item label:hover {
+            background-color: var(--accent-light);
+            border-color: var(--accent-color);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: var(--correct-bg);
+            color: var(--correct-color);
+            border: 1px solid var(--correct-color);
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background-color: var(--incorrect-bg);
+            color: var(--incorrect-color);
+            border: 1px solid var(--incorrect-color);
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #005f75;
+        }
+
+        #result-summary {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid var(--accent-color);
+        }
+
+        #result-summary h2 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Qüestionari Tècnic: C++ per a Arduino vs ESP32</h1>
+        <p>Posa a prova els teus coneixements sobre arquitectura, FreeRTOS i microcontroladors</p>
+    </header>
+
+    <form id="quiz-form">
+        
+        <div class="quiz-card" data-question="1">
+            <div class="question-text">1. Quina és la principal diferència d'arquitectura pel que fa a la CPU entre un Arduino Uno clàssic (ATmega328P) i un ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q1" value="a"> a) Arduino és de 16 bits i ESP32 és de 32 bits.</label></li>
+                <li class="option-item"><label><input type="radio" name="q1" value="b"> b) Arduino és de 8 bits (un sol nucli) i ESP32 és de 32 bits (generalment de doble nucli).</label></li>
+                <li class="option-item"><label><input type="radio" name="q1" value="c"> c) Arduino utilitza arquitectura ARM i ESP32 utilitza Xtensa.</label></li>
+                <li class="option-item"><label><input type="radio" name="q1" value="d"> d) Ambdós són de 32 bits, però ESP32 té més memòria Flash.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> L'ESP32 fa un salt de gegant en potència de càlcul passant d'un xip de 8 bits a un processador Xtensa de 32 bits (normalment dual-core), la qual cosa permet un autèntic paral·lelisme mitjançant multitasca.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question-text">2. Quina funció s'utilitza en ESP32 (sota FreeRTOS) per a assignar una tasca a un nucli específic de la CPU?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q2" value="a"> a) digitalWriteCore()</label></li>
+                <li class="option-item"><label><input type="radio" name="q2" value="b"> b) xTaskCreatePinnedToCore()</label></li>
+                <li class="option-item"><label><input type="radio" name="q2" value="c"> c) attachInterruptCore()</label></li>
+                <li class="option-item"><label><input type="radio" name="q2" value="d"> d) thread.runOnCore()</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> Aquesta funció és nativa de l'API de FreeRTOS inclosa en l'ESP32 i permet indicar el codi de la tasca, la memòria assignada (stack) i el nucli exacte (0 o 1) on s'executarà.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question-text">3. Quin és el voltatge de funcionament natiu (I/O) de l'ESP32 i què passa si el connectem directament a un sensor de 5V sense adaptador de nivell?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q3" value="a"> a) Funciona a 5V; no passa res perquè és totalment tolerant.</label></li>
+                <li class="option-item"><label><input type="radio" name="q3" value="b"> b) Funciona a 1.8V; el sensor no rebrà prou potència.</label></li>
+                <li class="option-item"><label><input type="radio" name="q3" value="c"> c) Funciona a 3.3V; es corre el risc de fer malbé els pins de l'ESP32.</label></li>
+                <li class="option-item"><label><input type="radio" name="q3" value="d"> d) Funciona a 12V; el sensor es cremarà de forma immediata.</label></li>
+            </ul>
+            <div class="feedback" data-correct="c">
+                <strong>Retroalimentació:</strong> A diferència de l'Arduino Uno (5V), l'ESP32 utilitza lògica de 3.3V. Introduir directament senyals de 5V pot degradar o destruir immediatament els pins de control GPIO.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question-text">4. Si utilitzem la funció delay(1000) en Arduino Uno vs. en un entorn ESP32 amb FreeRTOS, quina és la diferència de comportament subjacent?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q4" value="a"> a) En Arduino bloqueja la CPU completament; en ESP32 cedeix temps de CPU a altres tasques del sistema operatiu en segon pla.</label></li>
+                <li class="option-item"><label><input type="radio" name="q4" value="b"> b) En ESP32 bloqueja els dos nuclis alhora de manera obligatòria.</label></li>
+                <li class="option-item"><label><input type="radio" name="q4" value="c"> c) En Arduino el temps es compta en microsegons i en ESP32 in mil·lisisegons.</label></li>
+                <li class="option-item"><label><input type="radio" name="q4" value="d"> d) No hi ha cap diferència; el codi es bloqueja exactament igual en ambdós dispositius a nivell de maquinari.</label></li>
+            </ul>
+            <div class="feedback" data-correct="a">
+                <strong>Retroalimentació:</strong> La biblioteca de suport d'ESP32 per a Arduino reescriu delay() de manera interna perquè cridi funcions del sistema operatiu (FreeRTOS), alliberant el nucli per a tasques de fons com la gestió del Wi-Fi.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question-text">5. Quina biblioteca nativa s'utilitza en ESP32 per a emmagatzemar dades permanents (clau-valor) en la memòria Flash, substituint conceptualment la biblioteca EEPROM.h d'Arduino?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q5" value="a"> a) SPIFFS.h</label></li>
+                <li class="option-item"><label><input type="radio" name="q5" value="b"> b) WiFi.h</label></li>
+                <li class="option-item"><label><input type="radio" name="q5" value="c"> c) Preferences.h</label></li>
+                <li class="option-item"><label><input type="radio" name="q5" value="d"> d) SD.h</label></li>
+            </ul>
+            <div class="feedback" data-correct="c">
+                <strong>Retroalimentació:</strong> Tot i que es pot simular la EEPROM, Preferences.h utilitza una partició de la memòria Flash anomenada NVS (Non-Volatile Storage) per a desar parelles clau-valor de forma molt més segura i eficient.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="6">
+            <div class="question-text">6. Quina és la resolució per defecte del convertidor analògic-digital (ADC) de l'ESP32 en comparació amb l'Arduino Uno?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q6" value="a"> a) Arduino Uno té 8 bits i ESP32 té 10 bits.</label></li>
+                <li class="option-item"><label><input type="radio" name="q6" value="b"> b) Arduino Uno té 10 bits (0-1023) i ESP32 té 12 bits (0-4095).</label></li>
+                <li class="option-item"><label><input type="radio" name="q6" value="c"> c) Arduino Uno té 12 bits i ESP32 té 16 bits.</label></li>
+                <li class="option-item"><label><input type="radio" name="q6" value="d"> d) Ambdós tenen exactament la mateixa resolució de 10 bits.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> L'ADC de l'ESP32 ofereix una precisió superior (4096 nivells diferents enfront dels 1024 de l'Arduino clàssic), el que es tradueix en millor resolució de lectura de sensors lineals.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="7">
+            <div class="question-text">7. Per què cal tenir precaució en utilitzar l'ADC2 de l'ESP32 en els nostres programes?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q7" value="a"> a) Perquè només funciona a 5V.</label></li>
+                <li class="option-item"><label><input type="radio" name="q7" value="b"> b) Perquè no es pot utilitzar si el Wi-Fi està activat i en funcionament.</label></li>
+                <li class="option-item"><label><input type="radio" name="q7" value="c"> c) Perquè és molt més lent que l'ADC1 (triga uns 10 mil·lisisegons per lectura).</label></li>
+                <li class="option-item"><label><input type="radio" name="q7" value="d"> d) Perquè només llegeix valors negatius.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> L'ADC2 comparteix el maquinari intern amb el mòdul de ràdio Wi-Fi de l'ESP32. Si necessites fer lectures analògiques mentre transmets dades per xarxa, has d'utilitzar obligatòriament els pins de l'ADC1.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="8">
+            <div class="question-text">8. Com es genera un senyal PWM en l'ESP32 utilitzant el nucli d'Arduino, sabent que la funció tradicional analogWrite() no estava implementada nativament en les primeres versions?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q8" value="a"> a) Fent servir les funcions ledcSetup(), ledcAttachPin() i ledcWrite().</label></li>
+                <li class="option-item"><label><input type="radio" name="q8" value="b"> b) Utilitzant directament digitalWrite() molt ràpid dins del loop().</label></li>
+                <li class="option-item"><label><input type="radio" name="q8" value="c"> c) Mitjançant la biblioteca PWM.h exclusiva d'ESP32.</label></li>
+                <li class="option-item"><label><input type="radio" name="q8" value="d"> d) L'ESP32 no disposa de maquinari per a generar senyals PWM.</label></li>
+            </ul>
+            <div class="feedback" data-correct="a">
+                <strong>Retroalimentació:</strong> L'ESP32 no disposa del maquinari de timers vinculat directament a pins fixos com l'Arduino clàssic. Utilitza el perifèric LEDC, molt flexible, que permet triar freqüència, resolució i assignar-lo a qualsevol GPIO acaterat.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="9">
+            <div class="question-text">9. Quina d'aquestes afirmacions sobre la memòria RAM és correcta?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q9" value="a"> a) L'Arduino Uno té 32 KB de RAM i l'ESP32 en té 520 KB.</label></li>
+                <li class="option-item"><label><input type="radio" name="q9" value="b"> b) L'Arduino Uno té 2 KB de SRAM i l'ESP32 en té uns 520 KB de SRAM.</label></li>
+                <li class="option-item"><label><input type="radio" name="q9" value="c"> c) Ambdós tenen la mateixa quantitat, però l'ESP32 la gestiona millor gràcies al C++.</label></li>
+                <li class="option-item"><label><input type="radio" name="q9" value="d"> d) L'ESP32 no té RAM interna; depèn exclusivament d'una targeta SD externa.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> La diferència d'espai és aclaparadora (més de 250 vegades superior). Això obre la porta a processar estructures de dades grans, buffers d'imatges o connexions TLS xifrades que un Arduino Uno seria incapaç de sostenir.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="10">
+            <div class="question-text">10. Quina biblioteca s'inclou de manera nativa en el core d'ESP32 per a crear un servidor web que aprofiti la potència del xip?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q10" value="a"> a) Ethernet.h</label></li>
+                <li class="option-item"><label><input type="radio" name="q10" value="b"> b) WebServer.h (nativa del core).</label></li>
+                <li class="option-item"><label><input type="radio" name="q10" value="c"> c) HTTPClient.h</label></li>
+                <li class="option-item"><label><input type="radio" name="q10" value="d"> d) ArduinoWebClient.h</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> El core d'ESP32 incorpora WebServer.h de sèrie per a creació de servidors HTTP, aprofitant la connectivitat Wi-Fi integrada.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="11">
+            <div class="question-text">11. Quin d'aquests mètodes de comunicació sense fils està integrat directament en el maquinari de l'ESP32, però absent en l'Arduino Uno?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q11" value="a"> a) Wi-Fi i Bluetooth (BR/EDR i BLE).</label></li>
+                <li class="option-item"><label><input type="radio" name="q11" value="b"> b) Només Radiofreqüència de 433 MHz.</label></li>
+                <li class="option-item"><label><input type="radio" name="q11" value="c"> c) LoRa WAN natiu.</label></li>
+                <li class="option-item"><label><input type="radio" name="q11" value="d"> d) ZigBee i infrarojos.</label></li>
+            </ul>
+            <div class="feedback" data-correct="a">
+                <strong>Retroalimentació:</strong> L'ESP32 es va dissenyar nativament com un sistema en xip (SoC) d'Internet de les Coses (IoT), de manera que el Wi-Fi i el Bluetooth estan integrats de fàbrica en el silici.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="12">
+            <div class="question-text">12. En programació C++ per a ESP32, quin tipus de dades és recomanable per a emmagatzemar de manera eficient una adreça MAC o configuracions de xarxa curtes?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q12" value="a"> a) String (objecte de C++).</label></li>
+                <li class="option-item"><label><input type="radio" name="q12" value="b"> b) Vectors de caràcters (char array) o estructures (struct).</label></li>
+                <li class="option-item"><label><input type="radio" name="q12" value="c"> c) long long int.</label></li>
+                <li class="option-item"><label><input type="radio" name="q12" value="d"> d) float.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> En sistemes encastats, optimitzar la memòria és clau. L'ús de cadenes clàssiques de C (char[]) evita les reserves dinàmiques constants de memòria que provoquen degradació a llarg termini.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="13">
+            <div class="question-text">13. El "Watchdog Timer" (WDT) en ESP32 actua de manera diferent que en Arduino Uno. Què pot provocar un "Watchdog Reset" en el Nucli 0 de l'ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q13" value="a"> a) Deixar el pin 2 connectat a GND.</label></li>
+                <li class="option-item"><label><input type="radio" name="q13" value="b"> b) Executar un bucle completament infinit sense cap mena de pausa (delay o vTaskDelay) que bloquegi les tasques de control del Wi-Fi.</label></li>
+                <li class="option-item"><label><input type="radio" name="q13" value="c"> c) Escriure en una variable de tipus int un valor superior a 32767.</label></li>
+                <li class="option-item"><label><input type="radio" name="q13" value="d"> d) Utilitzar massa memòria Flash en carregar imatges.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> FreeRTOS necessita "respirar". Si el teu codi acapara el processador en un while(true) sense cedir el control, el Watchdog s'adona que el sistema operatiu de fons ha quedat congelat i reinicia el xip per seguretat.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="14">
+            <div class="question-text">14. Quina funció de l'API de FreeRTOS s'ha d'utilitzar en ESP32 en lloc de delay() per a bloquejar una tasca durant un temps determinat sense perdre eficiència energeticoblocant?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q14" value="a"> a) sleep_ms()</label></li>
+                <li class="option-item"><label><input type="radio" name="q14" value="b"> b) vTaskDelay()</label></li>
+                <li class="option-item"><label><input type="radio" name="q14" value="c"> c) delayMicroseconds()</label></li>
+                <li class="option-item"><label><input type="radio" name="q14" value="d"> d) waitTicks()</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> La funció vTaskDelay() posa la tasca actual en estat de "Bloquejada/En espera" durant una quantitat de ticks de clock, permetent que el planificador de FreeRTOS executi altres tasques mentrestant.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="15">
+            <div class="question-text">15. Com es defineix una funció de tasca independent en C++ per a FreeRTOS en l'ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q15" value="a"> a) void funció(int pin)</label></li>
+                <li class="option-item"><label><input type="radio" name="q15" value="b"> b) void funció(void * parameter)</label></li>
+                <li class="option-item"><label><input type="radio" name="q15" value="c"> c) int funció()</label></li>
+                <li class="option-item"><label><input type="radio" name="q15" value="d"> d) Task funció(String nom)</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> Totes les tasques creades per a funcionar de forma paral·lela en FreeRTOS de l'ESP32 han de seguir aquest prototip estricte (tornar void i rebre un punter de tipus void* com a paràmetre).
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="16">
+            <div class="question-text">16. En Arduino Uno utilitzem attachInterrupt(digitalPinToInterrupt(pin), funció, RISING). Es pot fer el mateix en ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q16" value="a"> a) No, l'ESP32 no admet interrupcions externes.</label></li>
+                <li class="option-item"><label><input type="radio" name="q16" value="b"> b) Sí, i a diferència de l'Arduino Uno, pràcticament qualsevol pin GPIO de l'ESP32 es pot configurar com a interrupció externa.</label></li>
+                <li class="option-item"><label><input type="radio" name="q16" value="c"> c) Sí, pero només en els pins 2 i 3 exactament igual que en Arduino Uno.</label></li>
+                <li class="option-item"><label><input type="radio" name="q16" value="d"> d) No, s'ha de programar obligatòriament en llenguatge assemblador (ASM).</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> Gràcies a la matriu de rutes internes del maquinari de l'ESP32, la flexibilitat és total. Gairebé qualsevol pin digital disposa de capacitat per a llançar interrupcions.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="17">
+            <div class="question-text">17. Quina paraula clau de C++ s'ha d'afegir abans d'una variable que es modifica dins d'una funció d'interrupció (ISR) per a evitar optimitzacions incorrectes del compilador?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q17" value="a"> a) static</label></li>
+                <li class="option-item"><label><input type="radio" name="q17" value="b"> b) const</label></li>
+                <li class="option-item"><label><input type="radio" name="q17" value="c"> c) volatile</label></li>
+                <li class="option-item"><label><input type="radio" name="q17" value="d"> d) register</label></li>
+            </ul>
+            <div class="feedback" data-correct="c">
+                <strong>Retroalimentació:</strong> La directiva volatile indica al compilador que el valor d'aquella variable pot canviar en qualsevol moment de forma externa, forçant-lo a rellegir-la sempre des de la RAM.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="18">
+            <div class="question-text">18. Quin d'aquests sistemes de fitxers moderns s'utilitza en la memòria Flash de l'ESP32 de forma estàndard substituint el vell SPIFFS?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q18" value="a"> a) FAT32</label></li>
+                <li class="option-item"><label><input type="radio" name="q18" value="b"> b) LittleFS</label></li>
+                <li class="option-item"><label><input type="radio" name="q18" value="c"> c) NTFS</label></li>
+                <li class="option-item"><label><input type="radio" name="q18" value="d"> d) ext4</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> SPIFFS s'ha declarat obsolet. LittleFS és molt més ràpid, suporta directoris reals i resisteix millor les pèrdues sobtades d'energia sense corrompre els fitxers.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="19">
+            <div class="question-text">19. Quin és l'efecte d'utilitzar moltes variables de tipus String dinàmiques en l'Arduino Uno en comparació amb l'ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q19" value="a"> a) En Arduino Uno pot fragmentar la poca RAM (2KB) ràpidament i penjar el sistema; l'ESP32 ho gestiona millor per la seva gran quantitat de RAM.</label></li>
+                <li class="option-item"><label><input type="radio" name="q19" value="b"> b) L'ESP32 es penja immediatament en usar un sol String.</label></li>
+                <li class="option-item"><label><input type="radio" name="q19" value="c"> c) Cap dels dos microcontroladors accepta l'objecte String de C++.</label></li>
+                <li class="option-item"><label><input type="radio" name="q19" value="d"> d) El comportament és idèntic perquè utilitzen el mètode de compilació estàndard sense canvis.</label></li>
+            </ul>
+            <div class="feedback" data-correct="a">
+                <strong>Retroalimentació:</strong> L'objecte String de C++ demana i allibera memòria de manera dinàmica (heap). En un entorn de només 2 KB de RAM (Arduino Uno) és molt perillós provocar fragmentació ràpidament.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="20">
+            <div class="question-text">20. Quants canals de comunicació I2C (muntats en maquinari independent) té l'ESP32 en comparació amb l'Arduino Uno?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q20" value="a"> a) Arduino Uno en té 0 (es fa per programari) i ESP32 en té 1.</label></li>
+                <li class="option-item"><label><input type="radio" name="q20" value="b"> b) Arduino Uno en té 1 Bus (pins A4/A5) i l'ESP32 en té 2 Busos de maquinari independents que es poden reassignar.</label></li>
+                <li class="option-item"><label><input type="radio" name="q20" value="c"> c) Ambdós tenen exactament 4 busos de maquinari.</label></li>
+                <li class="option-item"><label><input type="radio" name="q20" value="d"> d) L'ESP32 utilitza SPI per a tot i no disposa de bus I2C.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> L'ESP32 disposa de dos controladors físics I2C complets (Wire i Wire1). A més, podem definir quins pins faran de SDA i SCL en el moment de fer la crida .begin().
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="21">
+            <div class="question-text">21. Què és el mode "Deep Sleep" de l'ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q21" value="a"> a) És un mode on la CPU s'apaga gairebé completament, consumint microampers, i es pot despertar per temporitzador o pins RTC.</label></li>
+                <li class="option-item"><label><input type="radio" name="q21" value="b"> b) És un mode d'estalvi que només apaga els leds de la placa.</label></li>
+                <li class="option-item"><label><input type="radio" name="q21" value="c"> c) Un mode on l'ESP32 s'escalfa menys de mitjana sense apagar res.</label></li>
+                <li class="option-item"><label><input type="radio" name="q21" value="d"> d) Un mètode exclusiu d'Arduino per a reiniciar el codi.</label></li>
+            </ul>
+            <div class="feedback" data-correct="a">
+                <strong>Retroalimentació:</strong> El mode "Deep Sleep" és crucial per a projectes IoT alimentats amb bateries. L'ESP32 manté vius únicament el temporitzador de baix consum o el coprocessador ULP, reduint el consum al mínim.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="22">
+            <div class="question-text">22. Quina estructura utilitza el fitxer principal d'un projecte en l'IDE d'Arduino quan programem per a ESP32?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q22" value="a"> a) int main() com en C++ estàndard de consola.</label></li>
+                <li class="option-item"><label><input type="radio" name="q22" value="b"> b) La mateixa estructura amb void setup() i void loop().</label></li>
+                <li class="option-item"><label><input type="radio" name="q22" value="c"> c) void init() i void run().</label></li>
+                <li class="option-item"><label><input type="radio" name="q22" value="d"> d) TaskMain() i TaskLoop().</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> L'avantatge principal de l'entorn d'Arduino és la capa d'abstracció. Encara que el maquinari de l'ESP32 sigui radicalment diferent i més potent, manté l'estructura clàssica setup/loop.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="23">
+            <div class="question-text">23. Què passa realment sota el capó amb la funció void loop() quan s'executa en un ESP32 configurat amb l'entorn d'Arduino?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q23" value="a"> a) S'executa com una tasca de FreeRTOS anomenada loopTask instal·lada normalment en el Nucli 1 de la CPU.</label></li>
+                <li class="option-item"><label><input type="radio" name="q23" value="b"> b) S'executa directament en el maquinari sense passar per cap sistema operatiu, igual que en l'Arduino Uno.</label></li>
+                <li class="option-item"><label><input type="radio" name="q23" value="c"> c) S'executa alternadament entre el Nucli 0 i el Nucli 1 cada mil·lisisegon.</label></li>
+                <li class="option-item"><label><input type="radio" name="q23" value="d"> d) S'anul·la completament i cal definir una tasca manualment.</label></li>
+            </ul>
+            <div class="feedback" data-correct="a">
+                <strong>Retroalimentació:</strong> L'IDE d'Arduino en l'ESP32 oculta una funció main() real que engega FreeRTOS i crea automàticament una tasca en el Nucli 1 per a encabir-hi el teu conegut codi del loop().
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="24">
+            <div class="question-text">24. Si necessitem connectar un ESP32 i un Arduino Uno mitjançant comunicació sèrie (UART) directa pels pins Tx/Rx, quina precaució elèctrica és obligatòria?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q24" value="a"> a) Connectar una resistència de pull-up a 12V.</label></li>
+                <li class="option-item"><label><input type="radio" name="q24" value="b"> b) Utilitzar un divisor de tensió o un adaptador de nivell lògic en la línia Tx de l'Arduino (5V) cap a la línia Rx de l'ESP32 (3.3V).</label></li>
+                <li class="option-item"><label><input type="radio" name="q24" value="c"> c) Cap, els cables es connecten directament sense perill.</label></li>
+                <li class="option-item"><label><input type="radio" name="q24" value="d"> d) Intercanviar els cables d'alimentació de 5V i 3.3V.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> Si el pin de transmissió (Tx) d'Arduino llança ràfegues de 5V directament cap al pin de recepció (Rx) de l'ESP32, es pot cremar el port sèrie de l'ESP32. Cal atenuar aquest voltatge a un rang de 3.3V.
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="25">
+            <div class="question-text">25. Quina utilitat té el coprocessador ULP (Ultra Low Power) que incorpora l'ESP32 de manera exclusiva respecte a l'Arduino Uno?</div>
+            <ul class="options-list">
+                <li class="option-item"><label><input type="radio" name="q25" value="a"> a) S'encarrega d'accelerar els gràfics de les pantalles TFT.</label></li>
+                <li class="option-item"><label><input type="radio" name="q25" value="b"> b) Permet executar codi en un microcontrolador secundari de molt baix consum mentre els dos nuclis principals de l'ESP32 estan en mode "Deep Sleep".</label></li>
+                <li class="option-item"><label><input type="radio" name="q25" value="c"> c) S'encarrega de xifrar les contrasenyes del Wi-Fi.</label></li>
+                <li class="option-item"><label><input type="radio" name="q25" value="d"> d) Ést el xip que gestiona la comunicació USB-Sèrie.</label></li>
+            </ul>
+            <div class="feedback" data-correct="b">
+                <strong>Retroalimentació:</strong> L'ULP és un petit processador independent de molt baix consum que pot fer comprovacions bàsiques de perifèrics o sensors sense necessitat d'activar els nuclis principals de l'ESP32.
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" id="submit-btn" class="btn">Corregir Qüestionari</button>
+        </div>
+    </form>
+
+    <div id="result-summary">
+        <h2>Resultat del Qüestionari</h2>
+        <div class="score-display" id="score-text">0 / 25</div>
+        <p id="percentage-text">0% encerts</p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('submit-btn').addEventListener('click', function() {
+        const form = document.getElementById('quiz-form');
+        const cards = document.querySelectorAll('.quiz-card');
+        let score = 0;
+        const total = cards.length;
+
+        cards.forEach(card => {
+            const qNum = card.getAttribute('data-question');
+            const selectedOption = form.querySelector(`input[name="q${qNum}"]:checked`);
+            const feedbackDiv = card.querySelector('.feedback');
+            const correctValue = feedbackDiv.getAttribute('data-correct');
+
+            feedbackDiv.classList.remove('correct', 'incorrect');
+
+            if (selectedOption) {
+                const userAns = selectedOption.value;
+                if (userAns === correctValue) {
+                    score++;
+                    feedbackDiv.classList.add('correct');
+                    feedbackDiv.innerHTML = "<strong>✓ Correcte!</strong> " + feedbackDiv.innerHTML.replace(/.*<strong>Retroalimentació:<\/strong>/, '');
+                } else {
+                    feedbackDiv.classList.add('incorrect');
+                    feedbackDiv.innerHTML = `<strong>✗ Incorrecte.</strong> La resposta correcta era la (${correctValue}).<br>` + feedbackDiv.innerHTML.replace(/.*<strong>Retroalimentació:<\/strong>/, '');
+                }
+            } else {
+                feedbackDiv.classList.add('incorrect');
+                feedbackDiv.innerHTML = `<strong>✗ No contestada.</strong> La resposta correcta era la (${correctValue}).<br>` + feedbackDiv.innerHTML.replace(/.*<strong>Retroalimentació:<\/strong>/, '');
+            }
+        });
+
+        const resultSummary = document.getElementById('result-summary');
+        const scoreDisplay = document.getElementById('score-text');
+        const percentageDisplay = document.getElementById('percentage-text');
+
+        scoreDisplay.textContent = `${score} / ${total}`;
+        const percentage = Math.round((score / total) * 100);
+        percentageDisplay.textContent = `${percentage}% d'encerts`;
+        resultSummary.style.display = 'block';
+
+        resultSummary.scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>

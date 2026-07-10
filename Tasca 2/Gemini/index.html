@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaluació TI II: Arquitectura de Sistemes de Control i Microcontroladors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Avaluació Tècnica: Arquitectura de Sistemes de Control, Microcontroladors i Programació</h1>
+        <p>Aquest qüestionari interactiu està dissenyat per a avaluar els continguts de blocs de sistemes automàtics de control, maquinari i programació encastada de la matèria <strong>Tecnologia i Enginyeria II (2n de Batxillerat)</strong>. Està dividit en 5 blocs clau: Arquitectura de Maquinari, Gestió de Memòria, Connectivitat, Programació Avançada de Sistemes i Eficiència Energètica.</p>
+    </header>
+
+    <div class="section-panel">
+        <button type="button" class="nav-tab active" onclick="showSection(1)">1. Arquitectura</button>
+        <button type="button" class="nav-tab" onclick="showSection(2)">2. Memòria i I/O</button>
+        <button type="button" class="nav-tab" onclick="showSection(3)">3. Connectivitat</button>
+        <button type="button" class="nav-tab" onclick="showSection(4)">4. Programació</button>
+        <button type="button" class="nav-tab" onclick="showSection(5)">5. Eficiència i Avançat</button>
+    </div>
+
+    <form id="quiz-form">
+        
+        <div id="section-1" class="quiz-section active">
+            <h2 class="section-title">Secció 1: Arquitectura de CPU i Sistemes de Control</h2>
+            
+            <div class="quiz-card" data-question="1">
+                <div class="question-text">1. Quina és la diferència fonamental d'arquitectura pel que fa al processament de dades entre l'ATmega328P (Arduino Uno) i el SoC ESP32?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q1" value="a"> a) L'ATmega328P és un microcontrolador CISC de 16 bits i l'ESP32 és RISC de 64 bits.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q1" value="b"> b) L'ATmega328P és una arquitectura Harvard de 8 bits (mononuclei) i l'ESP32 compta amb una arquitectura de 32 bits (generalment dual-core Xtensa LX6).</label></li>
+                    <li class="option-item"><label><input type="radio" name="q1" value="c"> c) Ambdós utilitzen arquitectura Von Neumann de 32 bits, diferenciant-se només en la velocitat de rellotge.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q1" value="d"> d) L'ESP32 és un microprocessador pur que requereix perifèrics externs i l'ATmega328P és un sistema encastat tancat.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> El salt de 8 bits a 32 bits multiprocés permet a l'ESP32 executar tasques concurrents complexes i sistemes operatius en temps real (RTOS), impensables en arquitectures de control senzilles de 8 bits.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="2">
+                <div class="question-text">2. En un entorn de temps real (FreeRTOS) utilitzat per l'ESP32, quina funció s'encarrega d'instanciar una tasca assignant-li un nucli concret per tal d'aprofitar l'arquitectura dual-core?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q2" value="a"> a) xTaskCreate()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q2" value="b"> b) xTaskCreatePinnedToCore()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q2" value="c"> c) void loopTask()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q2" value="d"> d) attachInterruptToCore()</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> <code>xTaskCreatePinnedToCore()</code> és la funció nativa específica de l'API que rep el punter de la tasca, el tamany del *stack*, els paràmetres, la prioritat i l'ID del nucli on s'ha d'executar el fil de processament de dades.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="3">
+                <div class="question-text">3. Des del punt de vista de la integració de sistemes de control de plantes industrials o de laboratori, quina limitació de tensió nativa presenta el maquinari de l'ESP32 respecte a les plaques clàssiques de la família Arduino Uno?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q3" value="a"> a) L'ESP32 treballa nativament a 5V de corrent continu en els seus pins GPIO, mentre que l'Arduino treballa a 3.3V.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q3" value="b"> b) L'ESP32 funciona amb un rang dinàmic de 0 a 1.8V, requerint amplificació operacional per a qualsevol actuador.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q3" value="c"> c) L'ESP32 opera estrictament amb lògica de baix voltatge a 3.3V i els seus pins NO són tolerants a 5V; una connexió directa pot destruir el xip.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q3" value="d"> d) L'ESP32 necessita obligatòriament fonts d'alimentació trifàsiques a causa del seu elevat consum.</label></li>
+                </ul>
+                <div class="feedback" data-correct="c">
+                    <strong>Retroalimentació:</strong> Per a acoblar sensors digitals de 5V (habituals en Arduino) a les entrades de l'ESP32 (3.3V), és obligatori implementar divisors de tensió o adaptadors de nivell lògic bidireccionals per seguretat elèctrica.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="4">
+                <div class="question-text">4. Com afecta l'ús del mètode bloquejant delay(1000) a l'execució d'un programa en un Arduino clàssic davant d'un entorn de multitasca amb FreeRTOS en ESP32?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q4" value="a"> a) En Arduino atura completament el comptador de programa de la CPU; en ESP32 el mètode es reescriu internament per a cedir el temps d'execució a altres tasques de fons de prioritat equivalent.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q4" value="b"> b) En ESP32 el delay() provoca un bloqueig simètric dels dos nuclis simultàniament.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q4" value="c"> c) En ambdós microcontroladors s'allibera la CPU per a realitzar càlculs matemàtics vectorials.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q4" value="d"> d) Provoca un desbordament de pila (*stack overflow*) immediat en arquitectures de 32 bits.</label></li>
+                </ul>
+                <div class="feedback" data-correct="a">
+                    <strong>Retroalimentació:</strong> El nucli d'ESP32 per a Arduino adapta <code>delay()</code> perquè invoque les funcions del planificador del sistema operatiu en temps real, evitant que les rutines de comunicació (com el Wi-Fi) perden sincronia.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="5">
+                <div class="question-text">5. Quin component físic de l'ESP32 permet realitzar operacions aritmètiques de coma flotant de manera eficient sense sobrecarregar la unitat lògica principal?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q5" value="a"> a) El coprocessador ULP de molt baix consum.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q5" value="b"> b) La unitat de maquinari FPU (Floating Point Unit) integrada.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q5" value="c"> c) El mòdul de xifratge simètric AES per maquinari.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q5" value="d"> d) El mòdul PWM de control de motors.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> L'existència d'una FPU integrada per maquinari accelera el càlcul d'algoritmes de control avançats (com el PID en robòtica o filtres digitals) treballant directament amb dades de tipus `float`.
+                </div>
+            </div>
+        </div>
+
+        <div id="section-2" class="quiz-section">
+            <h2 class="section-title">Secció 2: Gestió de Memòria i Adquisició de Senyals (I/O)</h2>
+            
+            <div class="quiz-card" data-question="6">
+                <div class="question-text">6. Analitza la capacitat de memòria SRAM d'un Arduino Uno (2 KB) en comparació amb un ESP32 (~520 KB). Quin tipus de funcionalitat de control permet aquesta diferència d'ordre magnitud?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q6" value="a"> a) Només augmenta la capacitat d'emmagatzemar línies de codi escrit de text pur.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q6" value="b"> b) Permet allotjar buffers grans de dades, stacks per a múltiples fils de programació, pàgines web complexes i connexions segures mitjançant certificats SSL/TLS.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q6" value="c"> c) La RAM no influeix en les funcionalitats, ja que tot s'executa directament des de la memòria ROM externa de l'actuador.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q6" value="d"> d) Permet prescindir totalment del compilador i programar directament en blocs visuals llançats des de la RAM.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> La gestió d'encriptació per a transmetre dades de sensors a plataformes de Núvol de forma segura requereix un espai de RAM que les plaques tradicions de 8 bits de control simple no tenen de forma física.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="7">
+                <div class="question-text">7. Quina és la resolució per defecte del Convertidor Analògic-Digital (ADC) de l'ESP32 i quin rang de valors digitals s'obté en realitzar una lectura en comparació amb un Arduino Uno?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type

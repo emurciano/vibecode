@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaluació TI II: Arquitectura de Sistemes de Control i Microcontroladors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Avaluació Tècnica: Arquitectura de Sistemes de Control, Microcontroladors i Programació</h1>
+        <p>Aquest qüestionari interactiu està dissenyat per a avaluar els continguts de blocs de sistemes automàtics de control, maquinari i programació encastada de la matèria <strong>Tecnologia i Enginyeria II (2n de Batxillerat)</strong>. Està dividit en 5 blocs clau: Arquitectura de Maquinari, Gestió de Memòria, Conectivitat, Programació Avançada de Sistemes i Eficiència Energètica.</p>
+    </header>
+
+    <div class="section-panel">
+        <button type="button" class="nav-tab active" onclick="showSection(1)">1. Arquitectura</button>
+        <button type="button" class="nav-tab" onclick="showSection(2)">2. Memòria i I/O</button>
+        <button type="button" class="nav-tab" onclick="showSection(3)">3. Connectivitat</button>
+        <button type="button" class="nav-tab" onclick="showSection(4)">4. Programació</button>
+        <button type="button" class="nav-tab" onclick="showSection(5)">5. Eficiència i Avançat</button>
+    </div>
+
+    <form id="quiz-form">
+        
+        <div id="section-1" class="quiz-section active">
+            <h2 class="section-title">Secció 1: Arquitectura de CPU i Sistemes de Control</h2>
+            
+            <div class="quiz-card" data-question="1">
+                <div class="question-text">1. Quina és la diferència fonamental d'arquitectura pel que fa al processament de dades entre l'ATmega328P (Arduino Uno) i el SoC ESP32?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q1" value="a"> a) L'ATmega328P és un microcontrolador CISC de 16 bits i l'ESP32 és RISC de 64 bits.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q1" value="b"> b) L'ATmega328P és una arquitectura Harvard de 8 bits (mononuclei) i l'ESP32 compta amb una arquitectura de 32 bits (generalment dual-core Xtensa LX6).</label></li>
+                    <li class="option-item"><label><input type="radio" name="q1" value="c"> c) Ambdós utilitzen arquitectura Von Neumann de 32 bits, diferenciant-se només en la velocitat de rellotge.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q1" value="d"> d) L'ESP32 és un microprocessador pur que requereix perifèrics externs i l'ATmega328P és un sistema encastat tancat.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> El salt de 8 bits a 32 bits multiprocés permet a l'ESP32 executar tasques concurrents complexes i sistemes operatius en temps real (RTOS), impensables en arquitectures de control senzilles de 8 bits.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="2">
+                <div class="question-text">2. En un entorn de temps real (FreeRTOS) utilitzat per l'ESP32, quina funció s'encarrega d'instanciar una tasca assignant-li un nucli concret per tal d'aprofitar l'arquitectura dual-core?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q2" value="a"> a) xTaskCreate()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q2" value="b"> b) xTaskCreatePinnedToCore()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q2" value="c"> c) void loopTask()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q2" value="d"> d) attachInterruptToCore()</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> <code>xTaskCreatePinnedToCore()</code> és la funció nativa específica de l'API que rep el punter de la tasca, el tamany del *stack*, els paràmetres, la prioritat i l'ID del nucli on s'ha d'executar el fil de processament de dades.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="3">
+                <div class="question-text">3. Des del punt de vista de la integració de sistemes de control de plantes industrials o de laboratori, quina limitació de tensió nactiva presenta el maquinari de l'ESP32 respecte a les plaques clàssiques de la família Arduino Uno?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q3" value="a"> a) L'ESP32 treballa nativament a 5V de corrent continu en els seus pins GPIO, mentre que l'Arduino treballa a 3.3V.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q3" value="b"> b) L'ESP32 funciona amb un rang dinàmic de 0 a 1.8V, requerint amplificació operacional per a qualsevol actuador.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q3" value="c"> c) L'ESP32 opera estrictament amb lògica de baix voltatge a 3.3V i els seus pins NO són tolerants a 5V; una connexió directa pot destruir el xip.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q3" value="d"> d) L'ESP32 necessita obligatòriament fonts d'alimentació trifàsiques a causa del seu elevat consum.</label></li>
+                </ul>
+                <div class="feedback" data-correct="c">
+                    <strong>Retroalimentació:</strong> Per a acoblar sensors digitals de 5V (habituals en Arduino) a les entrades de l'ESP32 (3.3V), és obligatori implementar divisors de tensió o adaptadors de nivell lògic bidireccionals per seguretat elèctrica.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="4">
+                <div class="question-text">4. Com afecta l'ús del mètode bloquejant delay(1000) a l'execució d'un programa en un Arduino clàssic davant d'un entorn de multitasca amb FreeRTOS en ESP32?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q4" value="a"> a) En Arduino atura completament el comptador de programa de la CPU; en ESP32 el mètode es reescriu internament per a cedir el temps d'execució a altres tasques de fons de prioritat equivalent.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q4" value="b"> b) En ESP32 el delay() provoca un bloqueig simètric dels dos nuclis simultàniament.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q4" value="c"> c) En ambdós microcontroladors s'allibera la CPU per a realitzar càlculs matemàtics vectorials.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q4" value="d"> d) Provoca un desbordament de pila (*stack overflow*) immediat en arquitectures de 32 bits.</label></li>
+                </ul>
+                <div class="feedback" data-correct="a">
+                    <strong>Retroalimentació:</strong> El nucli d'ESP32 per a Arduino adapta <code>delay()</code> perquè invoque les funcions del planificador del sistema operatiu en temps real, evitant que les rutines de comunicació (com el Wi-Fi) perden sincronia.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="5">
+                <div class="question-text">5. Quin component físic de l'ESP32 permet realitzar operacions aritmètiques de coma flotant de manera eficient sense sobrecarregar la unitat lògica principal?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q5" value="a"> a) El coprocessador ULP de molt baix consum.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q5" value="b"> b) La unitat de maquinari FPU (Floating Point Unit) integrada.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q5" value="c"> c) El mòdul de xifratge simètric AES per maquinari.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q5" value="d"> d) El mòdul PWM de control de motors.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> L'existència d'una FPU integrada per maquinari accelera el càlcul d'algoritmes de control avançats (com el PID en robòtica o filtres digitals) treballant directament amb dades de tipus `float`.
+                </div>
+            </div>
+        </div>
+
+        <div id="section-2" class="quiz-section">
+            <h2 class="section-title">Secció 2: Gestió de Memòria i Adquisició de Senyals (I/O)</h2>
+            
+            <div class="quiz-card" data-question="6">
+                <div class="question-text">6. Analitza la capacitat de memòria SRAM d'un Arduino Uno (2 KB) en comparació amb un ESP32 (~520 KB). Quin tipus de funcionalitat de control permet aquesta diferència d'ordre magnitud?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q6" value="a"> a) Només augmenta la capacitat d'emmagatzemar línies de codi escrit de text pur.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q6" value="b"> b) Permet allotjar buffers grans de dades, stacs per a múltiples fils de programació, pàgines web complexes i connexions segures mitjançant certificats SSL/TLS.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q6" value="c"> c) La RAM no influeix en les funcionalitats, ja que tot s'executa directament des de la memòria ROM externa de l'actuador.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q6" value="d"> d) Permet prescindir totalment del compilador i programar directament en blocs visuals llançats des de la RAM.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> La gestió d'encriptació per a transmetre dades de sensors a plataformes de Núvol de forma segura requereix un espai de RAM que les plaques tradicionals de 8 bits de control simple no tenen de forma física.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="7">
+                <div class="question-text">7. Quina és la resolució per defecte del Convertidor Analògic-Digital (ADC) de l'ESP32 i quin rang de valors digitals s'obté en realitzar una lectura en comparació amb un Arduino Uno?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q7" value="a"> a) 8 bits, donant un rang discreter de 0 a 255.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q7" value="b"> b) 10 bits en ambdós dispositius, donant un rang fix de 0 a 1023.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q7" value="c"> c) 12 bits de resolució, oferint un rang discret de 0 a 4095, enfront dels 10 bits (0-1023) d'un Arduino clàssic.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q7" value="d"> d) 16 bits, expressat en valors de coma flotant de -1.0 a 1.0.</label></li>
+                </ul>
+                <div class="feedback" data-correct="c">
+                    <strong>Retroalimentació:</strong> Un convertidor de 12 bits proporciona una precisió i sensibilitat superior a l'hora de monitoritzar variables analògiques com temperatura, pressió o voltatge de bateries en projectes d'enginyeria.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="8">
+                <div class="question-text">8. En dissenyar un sistema d'adquisició de dades amb transmissió sense fils per Wi-Fi a l'ESP32, per què s'ha d'evitar l'ús dels pins de lectura analògica associats a l'ADC2?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q8" value="a"> a) Perquè estan connectats al pin de reset i bloquegen la placa.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q8" value="b"> b) Perquè l'ADC2 comparteix maquinari físic amb la ràdio Wi-Fi i no es pot utilitzar de manera concurrent quan la transmissió sense fils està activa.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q8" value="c"> c) Perquè tenen una limitació de voltatge de només 1.2V.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q8" value="d"> d) L'ADC2 no té cap limitació i s'ha d'utilitzar preferentment per davant de l'ADC1.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> Per a garantir que el sistema puga llegir un sensor analògic i transmetre dades a internet simultàniament, s'han de seleccionar obligatòriament els canals pertanyents a l'ADC1.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="9">
+                <div class="question-text">9. Com funciona el sistema de fitxers modern de tipus no volàtil recomanat en l'ESP32 per a emmagatzemar pàgines HTML o paràmetres de configuració que substitueix el vell SPIFFS?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q9" value="a"> a) FAT32, ja que té compatibilitat directa amb sistemes operatius de gran consum.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q9" value="b"> b) LittleFS, dissenyat per a microcontroladors, suporta subdirectoris i és resistent a fallades d'alimentació repentines.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q9" value="c"> c) EEPROM virtual mitjançant ram dinàmica volatil.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q9" value="d"> d) NTFS per a l'encriptació en targetes Secure Digital integrades.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> LittleFS optimitza els cicles de desgast de la memòria Flash de caràcter encastat i evita corrupcions de dades si el microcontrolador perd l'alimentació elèctrica durant una escriptura de fitxer.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="10">
+                <div class="question-text">10. Quina llibreria del Core d'ESP32 ofereix un mecanisme d'emmagatzematge permanent de parelles clau-valor basat en la tecnologia NVS, superant conceptualment l'accés directe per adreça de memòria de la llibreria EEPROM.h clàssica?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q10" value="a"> a) FS.h</label></li>
+                    <li class="option-item"><label><input type="radio" name="q10" value="b"> b) Preferences.h</label></li>
+                    <li class="option-item"><label><input type="radio" name="q10" value="c"> c) Wire.h</label></li>
+                    <li class="option-item"><label><input type="radio" name="q10" value="d"> d) SPIFFS.h</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> Amb <code>Preferences.h</code> s'emmagatzemen paràmetres definint claus alfanumèriques i tipus de dades (p. ex: "wifi_pass", "123456") en una partició de la Flash anomenada NVS (Non-Volatile Storage), de forma molt més intuïtiva i modular.
+                </div>
+            </div>
+        </div>
+
+        <div id="section-3" class="quiz-section">
+            <h2 class="section-title">Secció 3: Interfícies de Connectivitat i Telemetria</h2>
+            
+            <div class="quiz-card" data-question="11">
+                <div class="question-text">11. Quina d'aquestes tecnologies de comunicació de dades sense fils està integrada directament al silici del maquinari de l'ESP32 i és absent en les plaques clàssiques d'Arduino?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q11" value="a"> a) Mòdem de radiofreqüència directe a 433 MHz per a xarxes domèstiques simples.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q11" value="b"> b) Pila de connectivitat integrada de ràdio per a Wi-Fi de 2.4 GHz i Bluetooth (v4.2 BR/EDR i BLE - Bluetooth Low Energy).</label></li>
+                    <li class="option-item"><label><input type="radio" name="q11" value="c"> c) Transceptor de ràdio de llarg abast amb tecnologia nativa LoRa WAN a 868 MHz.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q11" value="d"> d) Receptor de satèl·lits de posicionament global GNSS/GPS.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> Aquesta integració converteix l'ESP32 en el node ideal per a l'IoT (Internet de les Coses), podent connectar-se directament a un punt d'accés domèstic (Wi-Fi) o enviar balises d'estat a baixa potència (BLE).
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="12">
+                <div class="question-text">12. Per a muntar un servidor de telemetria local dins del propi microcontrolador ESP32 utilitzant les seues capacitats de xarxa per a controlar actuadors industrial, quina llibreria nativa del core hem d'incloure al codi?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q12" value="a"> a) EthernetServer.h</label></li>
+                    <li class="option-item"><label><input type="radio" name="q12" value="b"> b) WebServer.h</label></li>
+                    <li class="option-item"><label><input type="radio" name="q12" value="c"> c) WiFiClientSecure.h</label></li>
+                    <li class="option-item"><label><input type="radio" name="q12" value="d"> d) HTTPClient.h</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> La biblioteca <code>WebServer.h</code> permet definir rutes d'accés (com `/encesa` o `/dades`) associades a funcions callback que responen codi HTML o objectes de dades JSON cap al navegador d'un usuari.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="13">
+                <div class="question-text">13. Quants busos de comunicació sèrie I2C independents té implementats per maquinari intern el xip ESP32 i quina flexibilitat de pins aporta la seua matriu de rutes (GPIO Matrix)?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q13" value="a"> a) Disposa d'un sol canal fix als pins analògics A4 i A5 igual que l'Arduino Uno.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q13" value="b"> b) Compta amb 2 busos de maquinari independents (Wire i Wire1), i gràcies a la GPIO Matrix es poden reassignar les línies SDA i SCL a pràcticament qualsevol pin digital des del codi.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q13" value="c"> c) No disposa de comunicació I2C per maquinari, s'ha d'emular completament per programari bloquejant.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q13" value="d"> d) Té 4 busos fixos obligatoris que comparteixen línia elèctrica amb l'alimentació a 5V.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> Aquesta capacitat d'enrutament intern resol un dels grans problemes de disseny de plaques de circuits impresos (PCB), atorgant al dissenyador llibertat total en l'elecció de pins de connexió dels dispositius.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="14">
+                <div class="question-text">14. En un projecte on cal interconnectar un Arduino Uno (alimentat a 5V) i un ESP32 (alimentat a 3.3V) mitjançant els seus ports sèrie UART (pins Tx/Rx), quina configuració de maquinari és imperativa?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q14" value="a"> a) Una unió directa dels pins Tx i Rx, ja que els nivells de voltatge lògic s'equilibren de manera automàtica.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q14" value="b"> b) Un divisor de tensió resistiu (o convertidor de nivell) en la línia de transmissió Tx de l'Arduino (5V) que redueixi la línia a 3.3V abans d'entrar al pin Rx de l'ESP32.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q14" value="c"> c) Una resistència pull-up connectada directament al rail de 12V d'alimentació de potència.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q14" value="d"> d) Invertir la polaritat elèctrica canviant el pin GND de posició entre les plaques.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> El pin Tx d'Arduino emet senyals a 5V. Si entren directament al pin Rx de l'ESP32, superaran els límits tolerats pel maquinari i destruiran el transistor del terminal d'entrada de dades.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="15">
+                <div class="question-text">15. Quin protocol de xarxa lleuger de tipus publicació/subscripció (sobre TCP/IP) és el més utilitzat en combinació amb l'ESP32 per a enviar telemetria a servidors de control domòtics o industrials (brokers)?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q15" value="a"> a) HTTP/HTTPS mitjançant mètodes clàssics POST.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q15" value="b"> b) FTP per a l'enviament continuat de llistes de dades d'estat.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q15" value="c"> c) MQTT (Message Queuing Telemetry Transport).</label></li>
+                    <li class="option-item"><label><input type="radio" name="q15" value="d"> d) Modbus RTU per cable coaxial d'alta freqüència.</label></li>
+                </ul>
+                <div class="feedback" data-correct="c">
+                    <strong>Retroalimentació:</strong> MQTT redueix al mínim la sobrecàrrega de dades dels encapçalaments de xarxa en comparació amb HTTP, la qual cosa estalvia ample de banda i redueix el consum d'energia del dispositiu d'adquisició.
+                </div>
+            </div>
+        </div>
+
+        <div id="section-4" class="quiz-section">
+            <h2 class="section-title">Secció 4: Programació Avançada i Sistemes d'Interrupció</h2>
+            
+            <div class="quiz-card" data-question="16">
+                <div class="question-text">16. Des del punt de vista de l'arquitectura elèctrica i la programació eficient, quina és l'avantatge clau de la configuració d'interrupcions externes (ISR) en l'ESP32 respecte a l'Arduino Uno?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q16" value="a"> a) L'ESP32 no requereix declarar cap funció especial per a gestionar-les.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q16" value="b"> b) En l'Arduino Uno només dos pins específics (2 i 3) poden actuar com a interrupcions externes; en l'ESP32 pràcticament qualsevol pin GPIO digital compta amb capacitat per a llançar interrupcions independents.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q16" value="c"> c) Les interrupcions de l'ESP32 s'executen obligatòriament en llenguatge assemblador pur, incrementant la velocitat del rellotge global.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q16" value="d"> d) En l'ESP32 les interrupcions bloquegen el xip fins que es reinicia l'alimentació d'entrada.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> Això dóna una versatilitat extrema en disseny de maquinari per a atendre esdeveniments en temps real que no poden esperar a la lectura seqüencial (polling) com polsadors d'emergència o encoders de motors.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="17">
+                <div class="question-text">17. En C++, quina paraula clau de control del compilador s'ha d'anteposar obligatòriament en la declaració d'una variable global que serà modificada dins d'una rutina d'interrupció (ISR)?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q17" value="a"> a) const</label></li>
+                    <li class="option-item"><label><input type="radio" name="q17" value="b"> b) static</label></li>
+                    <li class="option-item"><label><input type="radio" name="q17" value="c"> c) volatile</label></li>
+                    <li class="option-item"><label><input type="radio" name="q17" value="d"> d) inline</label></li>
+                </ul>
+                <div class="feedback" data-correct="c">
+                    <strong>Retroalimentació:</strong> L'atribut <code>volatile</code> indica al compilador d'optimització de C++ que la variable pot canviar de valor de forma asíncrona fora del flux normal del programa, forçant-lo a consultar sempre el valor físic directament a la memòria RAM.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="18">
+                <div class="question-text">18. Quin risc crític té l'execució d'un bucle indefinit buit o bloquejant (com un structure 'while(true);') dins d'una tasca que s'executa en el Nucli 0 de l'ESP32 si el temporitzador de seguretat no està alimentat correctament?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q18" value="a"> a) Un curtcircuit tèrmic en els mòduls reguladors de potència externs.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q18" value="b"> b) Un bloqueig general de les funcions del sistema operatiu que dispararà un reinici forçat per maquinari a causa de la fallada del Watchdog Timer (WDT).</label></li>
+                    <li class="option-item"><label><input type="radio" name="q18" value="c"> c) Una descàrrega instantània de tota la memòria Flash del microcontrolador.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q18" value="d"> d) Automàticament el programa passa a compilar-se en mode segur utilitzant el segon nucli.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> En l'ESP32 el Watchdog monitoritza de manera estricta que les tasques donen un respir al planificador del sistema, garantint que els processos en segon pla com la pila TCP/IP o Bluetooth puguen atendre la xarxa elèctrica.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="19">
+                <div class="question-text">19. Quina funció nativa d'ajust temporal de FreeRTOS s'ha de fer servir en programació d'ESP32 en comptes del mètode delay() per a fer que una tasca entre en estat de repòs de forma eficient alliberant el processador?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q19" value="a"> a) sleep_ms()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q19" value="b"> b) vTaskDelay()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q19" value="c"> c) delayMicroseconds()</label></li>
+                    <li class="option-item"><label><input type="radio" name="q19" value="d"> d) taskBlock()</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> La crida a la funció <code>vTaskDelay(pdMS_TO_TICKS(1000))</code> bloqueja temporalment la tasca indicant la seua durada en cicles de rellotge (ticks), permetent que el processador execute directament altres fils de prioritat inferior.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="20">
+                <div class="question-text">20. Quin tipus de dada és el prototip correcte i obligatori que ha de retornar i rebre una funció en C++ dissenyada per a actuar com a una tasca independent sota el planificador d'esdeveniments concurrents?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q20" value="a"> a) int nom_funcio(void)</label></li>
+                    <li class="option-item"><label><input type="radio" name="q20" value="b"> b) void nom_funcio(void *pvParameters)</label></li>
+                    <li class="option-item"><label><input type="radio" name="q20" value="c"> c) Task nom_funcio(String parametre)</label></li>
+                    <li class="option-item"><label><input type="radio" name="q20" value="d"> d) void nom_funcio(int pin_control)</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> El tipus de retorn ha de ser obligatòriament `void` per a complir l'estàndard de creació de fils. A més, rep com a argument un punter a void (`void *`) que permet injectar qualsevol estructura de dades complexa cap a l'interior de la tasca en iniciar-se.
+                </div>
+            </div>
+        </div>
+
+        <div id="section-5" class="quiz-section">
+            <h2 class="section-title">Secció 5: Eficiència Energètica i Perifèrics Avançats</h2>
+            
+            <div class="quiz-card" data-question="21">
+                <div class="question-text">21. En el disseny d'un node sensor autònom alimentat per bateries de liti, en què consisteix el mode de funcionament ultra-eficient conegut com a "Deep Sleep" en l'ESP32?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q21" value="a"> a) Desactiva el codi de seguretat allotjat a la Flash sense reduir el consum elèctric.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q21" value="b"> b) Apaga gairebé per complet el sistema (CPU, ràdio, perifèrics principals i RAM), mantenint només actiu el controlador de baix consum RTC i el temporitzador, baixant el consum a l'ordre dels microampers (µA).</label></li>
+                    <li class="option-item"><label><input type="radio" name="q21" value="c"> c) Un estat de fallada crítica que demana una reprogramació forçada per cable.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q21" value="d"> d) És un mètode per a apagar exclusivament el LED d'alimentació encastat a la placa.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> Aquest recurs d'estalvi energètic és decisiu per a implementar estacions meteorològiques o biosensors de llarga durada. En despertar, el sistema inicia el codi des del principi (`setup`), perdent les dades de la RAM que no s'hagen desat a particions estables o registres especials de l'RTC.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="22">
+                <div class="question-text">22. Quin perifèric exclusiu de l'ESP32 actua com a xicotet processador independent capaç de monitoritzar sensors analògics mitjançant I2C o pins GPIO mentre els nuclis principals estan completament apagats en mode estalvi?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q22" value="a"> a) L'accelerador de maquinari SHA-256.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q22" value="b"> b) El coprocessador ULP (Ultra Low Power).</label></li>
+                    <li class="option-item"><label><input type="radio" name="q22" value="c"> c) El mòdul de control PWM de tipus LEDC.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q22" value="d"> d) El convertidor Digital-Analògic DAC natiu.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> El coprocessador ULP s'encarrega de fer tasques mínimes de control continu (p. ex: comprovar si un dipòsit ha arribat al nivell crític). Si es compleix la condició, té la capacitat de despertar la CPU principal per a gestionar la transmissió de dades d'alarma de xarxa.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="23">
+                <div class="question-text">23. Com es gestiona la generació de senyals de control per Amplada de Pols (PWM) en l'ESP32 tenint en compte que l'antiga funció analogWrite() de les primeres plataformes d'Arduino no estava associada a maquinari fix?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q23" value="a"> a) S'ha de generar connectant i desconnectant un pin manualment mitjançant delay() en el flux general.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q23" value="b"> b) S'utilitza el perifèric LEDC definint de forma programàtica la freqüència de treball, la resolució en bits i vinculant el canal a qualsevol GPIO actiu.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q23" value="c"> c) L'ESP32 no conté maquinari per a PWM, requerint targetes addicionals DAC per a qualsevol control de motors.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q23" value="d"> d) S'utilitza exclusivament la llibreria Servo.h clàssica modificada a 5V.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> El perifèric LEDC de l'ESP32 ofereix canals altament configurables. Permet controlar amb precisió des de la intensitat d'un díode LED fins a l'etapa de potència de control de velocitat de servomotors industrials amb resolució dinàmica variable.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="24">
+                <div class="question-text">24. Quan es programa l'ESP32 sota l'ecosistema de programació d'Arduino, quina tasca interna s'encarrega d'executar el codi inserit per l'usuari dins de la funció cíclica tradicional void loop()?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q24" value="a"> a) Una tasca del sistema operatiu en temps real anomenada `loopTask`, llançada generalment al Nucli 1 amb prioritat bàsica.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q24" value="b"> b) Cap, s'executa directament sobre el maquinari sense cap tipus d'abstracció intermèdia igual que en l'ATmega328P.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q24" value="c"> c) S'executa com una interrupció per maquinari d'alta prioritat al Nucli 0.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q24" value="d"> d) Una subrutina exclusiva dels mòduls d'antena de ràdio.</label></li>
+                </ul>
+                <div class="feedback" data-correct="a">
+                    <strong>Retroalimentació:</strong> L'entorn d'Arduino amaga el codi d'inicialització real de FreeRTOS. El sistema engega el planificador i genera automàticament aquesta tasca perquè l'alumne puga programar sense necessitat de gestionar manualment la creació de fils en projectes bàsics.
+                </div>
+            </div>
+
+            <div class="quiz-card" data-question="25">
+                <div class="question-text">25. Quina utilitat aporten els pins del perifèric de canvis capactius (Touch Pins) integrats directament al silici del xip de l'ESP32?</div>
+                <ul class="options-list">
+                    <li class="option-item"><label><input type="radio" name="q25" value="a"> a) Mesuren de forma continuada la resistència elèctrica de talls de cable en curtcircuit.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q25" value="b"> b) Detecten variacions en la capacitat elèctrica en tocar el pin directament o mitjançant una superfície conductora, funcionant com a botons tàctils o activadors de despertador des del repòs.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q25" value="c"> c) Actuen de connectors per a pantalles LCD d'alta definició de pols de matriu activa.</label></li>
+                    <li class="option-item"><label><input type="radio" name="q25" value="d"> d) Generen polsos d'alta tensió per a provar actuadors piezoelèctrics externs.</label></li>
+                </ul>
+                <div class="feedback" data-correct="b">
+                    <strong>Retroalimentació:</strong> Aquests pins capacitius eliminen la necessitat de polsadors mecànics externs subjectes a desgast o rebots elèctrics, oferint la possibilitat de fabricar panells de comandament completament estancs a la brutícia o humitat.
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-nav">
+            <button type="button" id="prev-btn" class="btn btn-nav" onclick="changeSection(-1)" style="visibility: hidden;">Anterior</button>
+            <button type="button" id="next-btn" class="btn btn-nav" onclick="changeSection(1)">Següent</button>
+            <button type="button" id="submit-btn" class="btn btn-action" onclick="validateQuiz()" style="display: none;">Avaluar Qüestionari</button>
+        </div>
+    </form>
+
+    <div id="result-summary">
+        <h2>Resultat de l'Avaluació Tècnica</h2>
+        <div class="score-display" id="score-text">0 / 25</div>
+        <p id="percentage-text" style="font-size: 1.2rem; font-weight: bold;">0% encerts</p>
+        <p style="color: #64748b;">Revisa a dalt les respostes de cada secció per a comprovar la retroalimentació tècnica detallada en cada cas.</p>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

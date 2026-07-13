@@ -1,2 +1,2 @@
 # vibecode
-Proves curs GVA Vibecoding
+Tasques del curs GVA Vibecoding de la Conselleria d'Educació

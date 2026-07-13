@@ -3,51 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Avaluació TI II: Arquitectura de Sistemes de Control</title>
+    <title>Quiz Arduino / ESP32</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="container">
-    <header>
-        <div class="header-top">
-            <h1 id="main-heading">Avaluació Tècnica: Arquitectura de Sistemes de Control, Microcontroladors i Programació</h1>
-            <div class="lang-panel">
-                <button type="button" class="lang-btn active" data-lang="ca">CA</button>
-                <button type="button" class="lang-btn" data-lang="es">ES</button>
-                <button type="button" class="lang-btn" data-lang="en">EN</button>
-                <button type="button" class="lang-btn" data-lang="de">DE</button>
+    <div class="quiz-container">
+        <header>
+            <h1 id="quiz-title">Qüestionari Arduino / ESP32</h1>
+            <div class="lang-selector">
+                <label for="lang-select" id="lang-label">Idioma:</label>
+                <select id="lang-select">
+                    <option value="ca" selected>Català</option>
+                    <option value="es">Castellà</option>
+                </select>
             </div>
-        </div>
-        <p id="main-description">Aquest qüestionari interactiu està dissenyat per a avaluar els continguts de blocs de sistemes automàtics de control, maquinari i programació encastada de la matèria Tecnologia i Enginyeria II (2n de Batxillerat).</p>
-    </header>
+        </header>
 
-    <div class="section-panel" id="section-tabs">
-        <button type="button" class="nav-tab active" data-sec="1">1. Arquitectura</button>
-        <button type="button" class="nav-tab" data-sec="2">2. Memòria i I/O</button>
-        <button type="button" class="nav-tab" data-sec="3">3. Connectivitat</button>
-        <button type="button" class="nav-tab" data-sec="4">4. Programació</button>
-        <button type="button" class="nav-tab" data-sec="5">5. Eficiència i Avançat</button>
+        <div class="progress-bar-container">
+            <div id="progress-bar" style="width: 0%;"></div>
+        </div>
+
+        <main id="quiz-core">
+            <div id="question-box">
+                <h2 id="question-text">Carregant pregunta...</h2>
+                <div id="options-container"></div>
+            </div>
+            <button id="btn-next" class="btn">Següent</button>
+        </main>
+
+        <section id="results-box" class="hidden">
+            <h2 id="results-title">Resultats de l'intent</h2>
+            <p id="score-text"></p>
+            <div id="feedback-list"></div>
+            <button id="btn-restart" class="btn">Torna a intentar-ho</button>
+        </section>
     </div>
 
-    <form id="quiz-form">
-        <div id="quiz-dynamic-container"></div>
-
-        <div class="actions-nav">
-            <button type="button" id="prev-btn" class="btn btn-nav" style="visibility: hidden;">Anterior</button>
-            <button type="button" id="next-btn" class="btn btn-nav">Següent</button>
-            <button type="button" id="submit-btn" class="btn btn-action" style="display: none;">Avaluar Qüestionari</button>
-        </div>
-    </form>
-
-    <div id="result-summary">
-        <h2 id="result-heading">Resultat de l'Avaluació Tècnica</h2>
-        <div class="score-display" id="score-text">0 / 25</div>
-        <p id="percentage-text" style="font-size: 1.2rem; font-weight: bold;">0% encerts</p>
-        <p id="result-footer" style="color: #64748b;">Revisa a dalt les respostes de cada secció per a comprovar la retroalimentació tècnica detallada.</p>
-    </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

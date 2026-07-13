@@ -1,250 +1,122 @@
 :root {
-    --bg-color: #f8fafc;
+    --primary-color: #00878f; /* Blau Arduino */
+    --secondary-color: #e06000; /* Taronja ESP32 */
+    --bg-color: #f4f6f9;
     --card-bg: #ffffff;
-    --text-color: #1e293b;
-    --accent-color: #0284c7;
-    --accent-light: #f0f9ff;
-    --correct-color: #16a34a;
-    --correct-bg: #f0fdf4;
-    --incorrect-color: #dc2626;
-    --incorrect-bg: #fef2f2;
-    --border-radius: 10px;
+    --text-color: #333333;
+    --success-color: #2e7d32;
+    --error-color: #c62828;
+    --border-radius: 8px;
 }
 
 body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    line-height: 1.6;
     margin: 0;
     padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
-.container {
-    max-width: 850px;
-    margin: 0 auto;
-}
-
-header {
-    background: linear-gradient(135deg, #0f172a, #1e3a8a);
-    color: white;
+.quiz-container {
+    background: var(--card-bg);
+    max-width: 700px;
+    width: 100%;
     padding: 30px;
     border-radius: var(--border-radius);
-    margin-bottom: 25px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-.header-top {
+header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
-    margin-bottom: 12px;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    flex: 1;
-}
+h1 { font-size: 1.5rem; color: var(--primary-color); margin: 0; }
 
-header p {
-    margin: 0;
-    opacity: 0.9;
-    font-size: 1.05rem;
-}
-
-/* Panell de selecció d'idioma */
-.lang-panel {
-    display: flex;
-    gap: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 4px;
-    border-radius: 6px;
-}
-
-.lang-btn {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    padding: 6px 10px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    cursor: pointer;
+.progress-bar-container {
+    background: #e0e0e0;
+    height: 8px;
     border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-.lang-btn:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.lang-btn.active {
-    background: white;
-    color: #0f172a;
-}
-
-.section-panel {
-    background: #e2e8f0;
-    padding: 10px;
-    border-radius: var(--border-radius);
     margin-bottom: 25px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    overflow: hidden;
 }
 
-.nav-tab {
-    flex: 1;
-    min-width: 120px;
-    padding: 10px;
-    background: #f1f5f9;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    color: #64748b;
-    transition: all 0.2s ease;
+#progress-bar {
+    background: var(--primary-color);
+    height: 100%;
+    transition: width 0.3s ease;
 }
 
-.nav-tab.active {
-    background: var(--accent-color);
-    color: white;
-}
-
-.quiz-section {
-    display: none;
-}
-
-.quiz-section.active {
-    display: block;
-}
-
-.section-title {
-    color: #0f172a;
-    border-bottom: 2px solid var(--accent-color);
-    padding-bottom: 8px;
+#question-text {
+    font-size: 1.2rem;
     margin-bottom: 20px;
-    font-size: 1.4rem;
 }
 
-.quiz-card {
-    background-color: var(--card-bg);
-    padding: 22px;
-    margin-bottom: 20px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    border-left: 5px solid var(--accent-color);
-}
-
-.question-text {
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-}
-
-.options-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.option-item {
-    margin-bottom: 10px;
-}
-
-.option-item label {
+.option-wrapper {
     display: block;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
     padding: 12px 15px;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    margin-bottom: 12px;
+    border-radius: var(--border-radius);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
 }
 
-.option-item label:hover {
-    background-color: var(--accent-light);
-    border-color: var(--accent-color);
+.option-wrapper:hover {
+    background: #eef7f8;
+    border-color: var(--primary-color);
 }
 
-.option-item input[type="radio"] {
-    margin-right: 10px;
-}
-
-.feedback {
-    margin-top: 15px;
-    padding: 15px;
-    border-radius: 6px;
-    display: none;
-    font-size: 0.95rem;
-}
-
-.feedback.correct {
-    display: block;
-    background-color: var(--correct-bg);
-    color: var(--correct-color);
-    border: 1px solid var(--correct-color);
-}
-
-.feedback.incorrect {
-    display: block;
-    background-color: var(--incorrect-bg);
-    color: var(--incorrect-color);
-    border: 1px solid var(--incorrect-color);
-}
-
-.actions-nav {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 25px;
-    margin-bottom: 50px;
-    gap: 15px;
+.option-wrapper input {
+    margin-right: 12px;
 }
 
 .btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
     padding: 12px 25px;
     font-size: 1rem;
-    font-weight: bold;
     border-radius: var(--border-radius);
     cursor: pointer;
-    border: none;
+    float: right;
     transition: background 0.2s;
 }
 
-.btn-nav {
-    background-color: #475569;
-    color: white;
-}
+.btn:hover { background: #00666c; }
 
-.btn-nav:hover {
-    background-color: #334155;
-}
+.hidden { display: none !important; }
 
-.btn-action {
-    background-color: var(--accent-color);
-    color: white;
-}
-
-.btn-action:hover {
-    background-color: #0369a1;
-}
-
-#result-summary {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    text-align: center;
-    margin-top: 20px;
-    display: none;
-    border: 2px solid var(--accent-color);
-}
-
-.score-display {
-    font-size: 2.8rem;
+/* Estils de Feedback Final */
+#score-text {
+    font-size: 1.3rem;
     font-weight: bold;
-    margin: 15px 0;
-    color: #0f172a;
+    margin-bottom: 20px;
 }
+
+.feedback-item {
+    border-left: 5px solid #ccc;
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.feedback-item.correct { border-color: var(--success-color); }
+.feedback-item.incorrect { border-color: var(--error-color); }
+
+.feedback-item h3 { margin: 0 0 8px 0; font-size: 1.1rem; }
+.p-status { font-weight: bold; margin: 5px 0; }
+.p-status.ok { color: var(--success-color); }
+.p-status.fail { color: var(--error-color); }
+.feedback-text { font-style: italic; color: #555; margin-top: 5px; }
+
+#btn-restart { float: none; margin-top: 20px; background: var(--secondary-color); }
+#btn-restart:hover { background: #b34d00; }
